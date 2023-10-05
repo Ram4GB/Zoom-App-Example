@@ -5,7 +5,7 @@ import { generateSignature } from "./utils";
 import useOnlyShowGalleryView from "./hooks/useOnlyShowGalleryView";
 import useResizeZoom from "./hooks/useResizeZoom.ts";
 import useZoomDebug from "./hooks/useZoomDebug/index.ts";
-import useAutoJoinAudio from "./hooks/useAutoJoinAudio/index.ts";
+import { faker } from "@faker-js/faker";
 
 enum ROLE {
   HOST = 1,
@@ -23,7 +23,7 @@ function App() {
   const meetingNumber = "8561292498";
   const password = "Hh9z3T";
   const [value, setValue] = useState<Form>({
-    userName: "Le Minh Cuong",
+    userName: faker.person.fullName(),
     meetingNumber,
     password,
   });
@@ -41,12 +41,11 @@ function App() {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
-  useAutoJoinAudio(zoomClient, {
-    container: document.getElementById("container") as HTMLElement,
-    autoGrantPermission: true,
-  });
 
   const loadZoom = async () => {
+    // sessionStorage.clear();
+    // localStorage.clear();
+
     const client = ZoomMtgEmbedded.createClient();
 
     clientRef.current = client;

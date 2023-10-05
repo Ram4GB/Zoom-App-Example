@@ -31,10 +31,9 @@ Fill your details to app
 ![alt](./images/CleanShot%202023-09-20%20at%2015.46.19@2x.png)
 ![alt](./images/CleanShot%202023-09-28%20at%2012.09.29@2x.png)
 
-## Most impress hook:
+## Supported hook:
 
 - `useOnlyShowGalleryView` makes default layout become gallery view.
-- `useAutoJoinAudio` make user automatically join audio without click on the `Join audio` button. It is not fair to join audio with more complex actions.
 - `useResizeZoom` make zoom resize more flexible in container, it always fit in container.
 
 ## Payload sample that send to create bot
