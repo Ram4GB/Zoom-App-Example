@@ -14,7 +14,6 @@ const retry = <T extends FC>(cb: T, retryTime = 3, retryDelay = 500, time = 1) =
         }, retryDelay);
       });
     } catch (error) {
-      console.log(error);
       if (time === retryTime) return false;
       return retry(cb, retryTime, retryDelay, time + 1);
     }
