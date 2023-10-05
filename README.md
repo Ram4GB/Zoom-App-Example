@@ -76,7 +76,6 @@ https://zoom.us/meeting#/pmi/8561292498
 https://devforum.zoom.us/t/gallery-view-button-not-displaying/58266/16
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer
 https://github.com/chaosprint/vite-plugin-cross-origin-isolation
-</pre>
 
 ## Zoom support
 
@@ -89,3 +88,4 @@ https://developers.zoom.us/docs/meeting-sdk/web/gallery-view/#how-views-look-wit
 ## Width/height zoom ratio
 
 https://developers.zoom.us/docs/meeting-sdk/web/component-view/resizing/#sizing-components-at-init
+</pre>
