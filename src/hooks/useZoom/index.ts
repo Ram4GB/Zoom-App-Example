@@ -28,10 +28,17 @@ export default function useZoom(client: typeof EmbeddedClient | null) {
     return curUser;
   }, [client]);
 
+  const endMeeting = useCallback(() => {
+    if (!client) return;
+
+    return client.endMeeting();
+  }, [client]);
+
   return {
     muteSelf,
     unmuteSelf,
     getMuteStatus,
     getCurrentUser,
+    endMeeting,
   };
 }
