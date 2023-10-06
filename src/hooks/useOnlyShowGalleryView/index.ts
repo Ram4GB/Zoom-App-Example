@@ -1,5 +1,7 @@
 import { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
+import "./index.css";
+import waitForElement from "../../utils/wait-for-element";
 
 export default function useOnlyShowGalleryView(
   client: typeof EmbeddedClient | null,
@@ -9,6 +11,7 @@ export default function useOnlyShowGalleryView(
   },
 ) {
   const { enabled } = options;
+  const mutationObserverRef = useRef<MutationObserver>();
 
   const getViewMode = () => {
     const optionModeEl: HTMLButtonElement | null =
@@ -32,35 +35,22 @@ export default function useOnlyShowGalleryView(
     return viewMode as SuspensionViewType;
   };
 
-  const removeOtherViewModeOnModeTabs = () => {
-    const viewModeTabs = document.querySelector('[aria-label="view mode tabs"]') as HTMLElement;
-
-    if (!viewModeTabs) return;
-
-    const buttons = viewModeTabs.querySelectorAll("button");
-
-    buttons.forEach((el) => {
-      if (el.getAttribute("title") !== "Gallery") el.style.display = "none";
-    });
-  };
-
-  const peerShareStateHandler = useCallback(function (payload: { action: string; userId: number }) {
+  const switchToGalleryView = useCallback(async () => {
     const modeView = getViewMode();
 
-    if (payload.action === "Start") return;
+    if (modeView.toLowerCase() === "gallery" || modeView.toLowerCase() === "speaker") return;
 
-    if (modeView.toLowerCase() === SuspensionViewType.Gallery || modeView.toLowerCase() === SuspensionViewType.Speaker)
-      return;
-
-    const firstOptionBtn = document.querySelectorAll(
+    const firstOptionBtn = await waitForElement(
       ".zmwebsdk-MuiPaper-root > .zmwebsdk-MuiToolbar-root div:nth-child(2) button",
-    )[0] as HTMLButtonElement;
+    );
 
     if (!firstOptionBtn) return;
 
-    firstOptionBtn.click();
+    (firstOptionBtn as HTMLButtonElement).click();
 
-    setTimeout(() => {
+    await waitForElement('[role="menu"][id^=menu-list-icon]').then(() => {});
+
+    await waitForElement('[role="menu"][id^=menu-list-icon] li').then(() => {
       document.querySelectorAll('[role="menu"] li').forEach((el) => {
         if (!el) return;
 
@@ -69,37 +59,38 @@ export default function useOnlyShowGalleryView(
         if (innerText === "Gallery") {
           (el as HTMLElement).click();
         }
-
-        const tabList = document.querySelectorAll("[role=tablist] button") as unknown as HTMLButtonElement[];
-
-        if (tabList.length === 0) return;
-
-        tabList.forEach((el) => {
-          if (el.getAttribute("title") !== "Gallery") {
-            el.style.display = "none";
-          }
-        });
       });
-    }, 0);
+    });
   }, []);
+
+  const peerShareStateHandler = useCallback(
+    function (payload: { action: string; userId: number }) {
+      mutationObserverRef.current?.disconnect();
+
+      if (payload.action === "Start") return;
+
+      mutationObserverRef.current = new MutationObserver(() => {
+        switchToGalleryView();
+      });
+
+      if (options.container)
+        mutationObserverRef.current.observe(options.container, { subtree: true, childList: true, attributes: false });
+    },
+    [switchToGalleryView, options.container],
+  );
 
   useEffect(() => {
     if (!client || !enabled) return;
 
+    document.body.classList.add("only-gallery-view");
+
     client.on("peer-share-state-change", peerShareStateHandler);
-
-    const mutationObserver = new MutationObserver(() => removeOtherViewModeOnModeTabs());
-
-    removeOtherViewModeOnModeTabs();
-
-    if (options.container) {
-      mutationObserver.observe(options.container, { attributes: true, childList: true, subtree: true });
-    }
 
     return () => {
       if (!client) return;
-
+      document.body.classList.remove("only-gallery-view");
       client.off("peer-share-state-change", peerShareStateHandler);
+      mutationObserverRef.current?.disconnect();
     };
   }, [client, enabled, options.container, peerShareStateHandler]);
 }
