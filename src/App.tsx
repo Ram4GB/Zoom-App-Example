@@ -6,6 +6,7 @@ import useOnlyShowGalleryView from "./hooks/useOnlyShowGalleryView";
 import useResizeZoom from "./hooks/useResizeZoom.ts";
 import useZoomDebug from "./hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
+import useAutoTurnAudioPermission from "./hooks/useAutoTurnAudioPermission/index.ts";
 
 enum ROLE {
   HOST = 1,
@@ -41,6 +42,7 @@ function App() {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
+  useAutoTurnAudioPermission(zoomClient);
 
   const loadZoom = async () => {
     // sessionStorage.clear();
@@ -59,7 +61,6 @@ function App() {
       zoomAppRoot: meetingSDKElement.current as unknown as HTMLElement,
       language: "en-US",
       customize: {
-        activeApps: {},
         meetingInfo: ["topic", "host", "mn", "pwd", "telPwd", "invite", "participant", "dc", "enctype"],
         video: {
           viewSizes: {
@@ -74,14 +75,6 @@ function App() {
         toolbar: {
           buttons: [],
         },
-        meeting: {
-          popper: {
-            modifiers: {
-              class: "dasd",
-            },
-            disableDraggable: true,
-          },
-        },
       },
     });
 
@@ -89,6 +82,10 @@ function App() {
       if (payload.state === "Connected") {
         setHideControl(true);
       } else {
+        ZoomMtgEmbedded.destroyClient();
+        clientRef.current = undefined;
+        window.zoomClient = null;
+        setZoomClient(null);
         setHideControl(false);
       }
     });
