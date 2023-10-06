@@ -10,7 +10,6 @@ const useAutoTurnAudioPermission = (client: typeof EmbeddedClient | null) => {
     if (!client) return;
 
     (async function () {
-      console.log("hello world");
       const audioBtn = await Promise.race([
         waitForElement("[title=Audio]"),
         waitForElement("[title=Mute]"),
