@@ -17,8 +17,6 @@ const useAutoTurnAudioPermission = (client: typeof EmbeddedClient | null) => {
         waitForElement("[title=Audio]"),
       ]);
 
-      console.log(audioBtn);
-
       if (!audioBtn) return;
 
       (audioBtn as unknown as HTMLButtonElement).click();
