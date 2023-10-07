@@ -34,11 +34,21 @@ export default function useZoom(client: typeof EmbeddedClient | null) {
     return client.endMeeting();
   }, [client]);
 
+  const rename = useCallback(
+    (newName: string, userId: number) => {
+      if (!client) return;
+
+      return client.rename(newName, userId);
+    },
+    [client],
+  );
+
   return {
     muteSelf,
     unmuteSelf,
     getMuteStatus,
     getCurrentUser,
     endMeeting,
+    rename,
   };
 }
