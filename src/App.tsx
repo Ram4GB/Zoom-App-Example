@@ -7,6 +7,7 @@ import useResizeZoom from "./hooks/useResizeZoom.ts";
 import useZoomDebug from "./hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
 import useAutoTurnAudioPermission from "./hooks/useAutoTurnAudioPermission/index.ts";
+import { Button } from "@chakra-ui/react";
 
 enum ROLE {
   HOST = 1,
@@ -134,17 +135,12 @@ function App() {
             <label htmlFor="userName">Is Moderator</label>
             <input checked={isMod} onChange={() => setIsMod((pre) => !pre)} type="checkbox" />
           </div>
-          <button type="button" onClick={loadZoom}>
+          <Button size="md" colorScheme="teal" type="button" onClick={loadZoom}>
             load zoom
             <a href="#"></a>
-          </button>
+          </Button>
         </form>
       )}
-
-      <div className="controls">
-        <button onClick={() => zoomClient?.stopAudio()}>stop audio</button>
-        <button onClick={() => console.log(zoomClient?.getCurrentUser())}>log current user</button>
-      </div>
 
       <pre id="log"></pre>
     </div>
