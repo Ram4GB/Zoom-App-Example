@@ -140,11 +140,12 @@ export default function LandingPage() {
             justifyContent="center"
             flexDirection="column"
             alignItems="center"
-            pl="8"
+            pl={{ base: 0, lg: 8 }}
+            mt={{ base: 4, lg: 0 }}
           >
-            <Flex alignItems="center">
+            <Flex alignItems="center" justifyContent="center">
               <IconButton onClick={prev} size="lg" variant="unstyled" aria-label="" icon={<ChevronLeftIcon />} />
-              <Image src={images[index].imgSrc} w={330} h={330} />
+              <Image src={images[index].imgSrc} w={{ base: "full", lg: 330 }} h={{ base: "auto", lg: 330 }} />
               <IconButton onClick={next} size="lg" variant="unstyled" aria-label="" icon={<ChevronRightIcon />} />
             </Flex>
 
