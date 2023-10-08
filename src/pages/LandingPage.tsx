@@ -144,9 +144,23 @@ export default function LandingPage() {
             mt={{ base: 4, lg: 0 }}
           >
             <Flex alignItems="center" justifyContent="center">
-              <IconButton onClick={prev} size="lg" variant="unstyled" aria-label="" icon={<ChevronLeftIcon />} />
+              <IconButton
+                disabled={index === 0 ? true : false}
+                onClick={prev}
+                size="lg"
+                variant="unstyled"
+                aria-label=""
+                icon={<ChevronLeftIcon />}
+              />
               <Image src={images[index].imgSrc} w={{ base: "full", lg: 330 }} h={{ base: "auto", lg: 330 }} />
-              <IconButton onClick={next} size="lg" variant="unstyled" aria-label="" icon={<ChevronRightIcon />} />
+              <IconButton
+                disabled={index === images.length - 1 ? true : false}
+                onClick={next}
+                size="lg"
+                variant="unstyled"
+                aria-label=""
+                icon={<ChevronRightIcon />}
+              />
             </Flex>
 
             <Box mt="3">
