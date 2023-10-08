@@ -5,6 +5,7 @@ import {
   IconButton,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalOverlay,
   ModalProps,
@@ -23,9 +24,10 @@ export default function SettingModal(props: SettingModal) {
     <Modal {...props} size="4xl">
       <ModalOverlay />
       <ModalContent>
+        <ModalCloseButton />
         <ModalBody p={0}>
           <Flex minHeight="calc(100vh - 128px)">
-            <Box w="256px" borderRight="1px solid #ddd" pr={2}>
+            <Box w="256px" borderRight="1px solid #ddd">
               <Heading as="h2" p="6">
                 Settings
               </Heading>
@@ -60,7 +62,6 @@ const SettingOption = (props: SettingOption) => {
       transition="background-color 0.3s ease"
       cursor="pointer"
       _hover={{ bgColor: "#eee" }}
-      borderRadius="0px 30px 30px 0px"
       p={6}
       as="div"
       display="flex"
@@ -92,7 +93,8 @@ const SoundOption = () => {
         <Box as="p">Microphone</Box>
         <Flex mt="1">
           <Select size="lg" maxW="311px">
-            <option>Hello world</option>
+            <option>Default - MacBook Pro Microphone (Built-in)</option>
+            <option>Hế nhô ☘️👨‍💻🤗🌻 Microphone</option>
           </Select>
         </Flex>
       </Box>
@@ -101,7 +103,8 @@ const SoundOption = () => {
         <Box as="p">Speakers</Box>
         <Flex mt="1">
           <Select size="lg" maxW="311px">
-            <option>Hello world</option>
+            <option>Default - MacBook Pro Microphone (Built-in)</option>
+            <option>Hế nhô ☘️👨‍💻🤗🌻 Microphone</option>
           </Select>
         </Flex>
       </Box>
