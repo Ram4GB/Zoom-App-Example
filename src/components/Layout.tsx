@@ -4,8 +4,12 @@ import { SettingsIcon, QuestionOutlineIcon, InfoOutlineIcon } from "@chakra-ui/i
 import { PiDotsNineBold } from "react-icons/pi";
 import logo from "@/assets/google_meet_horizontal_wordmark_2020q4_2x_icon_124_40_292e71bcb52a56e2a9005164118f183b.png";
 import myLogo from "@/assets/IMG_0158_2_Large.jpeg";
+import SettingModal from "../sections/LandingPage/SettingModal";
+import { useState } from "react";
 
 export default function Layout() {
+  const [isOpenSettingModal, setIsOpenSettingModal] = useState(false);
+
   return (
     <>
       <Container maxW="container.xl">
@@ -39,10 +43,11 @@ export default function Layout() {
                     variant="unstyled"
                     icon={<SettingsIcon />}
                     aria-label="Settings icon"
+                    onClick={() => setIsOpenSettingModal(true)}
                   />
                 </Tooltip>
-                <Tooltip label="Settings">
-                  <input className="w-7 bg-white border-none" type="color" value="#319795" />
+                <Tooltip label="Colors">
+                  <input onChange={() => {}} className="w-7 bg-white border-none" type="color" value="#319795" />
                 </Tooltip>
               </Stack>
               <Stack direction="row" display="flex" alignItems="center" ml={6}>
@@ -66,6 +71,8 @@ export default function Layout() {
 
         <Outlet />
       </Container>
+
+      <SettingModal isOpen={isOpenSettingModal} onClose={() => setIsOpenSettingModal(false)} />
     </>
   );
 }
