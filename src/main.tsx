@@ -12,6 +12,18 @@ const theme = extendTheme({
         fontFamily: "Inter",
       },
     },
+    Link: {
+      baseStyle: {
+        color: "#2962ff",
+        textDecoration: "none",
+        _hover: {
+          textDecoration: "none",
+        },
+      },
+    },
+  },
+  colors: {
+    lightGrey: "#5f6368",
   },
 });
 

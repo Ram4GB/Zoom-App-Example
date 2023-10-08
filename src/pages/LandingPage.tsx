@@ -86,8 +86,6 @@ export default function LandingPage() {
               available for all.
             </Box>
             <Stack direction="row" flexWrap="wrap">
-              {/* <Button>New meeting</Button> */}
-
               <Menu>
                 <MenuButton
                   as={Button}
@@ -127,10 +125,7 @@ export default function LandingPage() {
             <Divider pt="24px" />
 
             <Box as="p" pt="24px">
-              <Link textDecoration="none" color="#2962ff">
-                Learn more
-              </Link>{" "}
-              <span color="#5f6368">about Google Meet</span>
+              <Link>Learn more</Link> <span color="lightGrey">about Google Meet</span>
             </Box>
           </Box>
 
