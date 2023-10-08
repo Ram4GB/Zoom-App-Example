@@ -11,11 +11,15 @@ import {
   InputGroup,
   InputLeftElement,
   Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Stack,
 } from "@chakra-ui/react";
 import { MdOutlineEmergencyRecording } from "react-icons/md";
 import { FaRegKeyboard } from "react-icons/fa";
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { AddIcon, CalendarIcon, ChevronLeftIcon, ChevronRightIcon, LinkIcon } from "@chakra-ui/icons";
 
 import image1 from "@/assets/meet_google_one_carousel_promo_icon_0f14bf8fc61484b019827c071ed8111d.svg";
 import image2 from "@/assets/user_edu_get_a_link_light_90698cd7b4ca04d3005c962a3756c42d.svg";
@@ -82,15 +86,31 @@ export default function LandingPage() {
               available for all.
             </Box>
             <Stack direction="row" flexWrap="wrap">
-              <Button
-                size="lg"
-                flexShrink={0}
-                leftIcon={<MdOutlineEmergencyRecording />}
-                colorScheme="teal"
-                variant="solid"
-              >
-                Join meeting
-              </Button>
+              {/* <Button>New meeting</Button> */}
+
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  size="lg"
+                  flexShrink={0}
+                  leftIcon={<MdOutlineEmergencyRecording />}
+                  colorScheme="teal"
+                  variant="solid"
+                >
+                  New meeting
+                </MenuButton>
+                <MenuList>
+                  <MenuItem py={3} icon={<LinkIcon />}>
+                    Create a meeting for later
+                  </MenuItem>
+                  <MenuItem py={3} icon={<AddIcon />}>
+                    Start an instant meeting
+                  </MenuItem>
+                  <MenuItem py={3} icon={<CalendarIcon />}>
+                    Schedule in Google Calendar
+                  </MenuItem>
+                </MenuList>
+              </Menu>
 
               <InputGroup flexGrow={1} maxW="231px">
                 <InputLeftElement h="full" pointerEvents="none">
