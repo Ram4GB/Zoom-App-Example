@@ -5,7 +5,6 @@ import useOnlyShowGalleryView from "../hooks/useOnlyShowGalleryView";
 import useResizeZoom from "../hooks/useResizeZoom.ts";
 import useZoomDebug from "../hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
-import useAutoTurnAudioPermission from "../hooks/useAutoTurnAudioPermission/index.ts";
 import { Button, FormControl, Input, FormLabel, Select, Container, Grid, GridItem } from "@chakra-ui/react";
 
 enum ROLE {
@@ -42,7 +41,6 @@ function App() {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
-  useAutoTurnAudioPermission(zoomClient);
 
   const loadZoom = async () => {
     const client = ZoomMtgEmbedded.createClient();
@@ -77,8 +75,10 @@ function App() {
 
     client.on("connection-change", (payload) => {
       if (payload.state === "Connected") {
+        if (!isMod) document.body.classList.add("only-gallery-view");
         setHideControl(true);
       } else {
+        document.body.classList.remove("only-gallery-view");
         ZoomMtgEmbedded.destroyClient();
         clientRef.current = undefined;
         window.zoomClient = null;
