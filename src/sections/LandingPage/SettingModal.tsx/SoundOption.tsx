@@ -11,7 +11,7 @@ export const SoundOption = (props: SoundOption) => {
   return (
     <Box>
       <Box>
-        <Box as="p" color="zlink" fontSize="14px" fontWeight="bold">
+        <Box as="p" color="zlink" fontSize="14px" fontWeight="semibold">
           Microphone
         </Box>
         <Flex mt="1" alignItems="center">
@@ -27,7 +27,7 @@ export const SoundOption = (props: SoundOption) => {
       </Box>
 
       <Box mt="6">
-        <Box as="p" color="zlink" fontSize="14px" fontWeight="bold">
+        <Box as="p" color="zlink" fontSize="14px" fontWeight="semibold">
           Speakers
         </Box>
         <Flex mt="1" alignItems="center">

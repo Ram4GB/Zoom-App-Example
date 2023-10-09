@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -16,6 +17,7 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { MdOutlineEmergencyRecording } from "react-icons/md";
 import { FaRegKeyboard } from "react-icons/fa";
@@ -25,7 +27,8 @@ import image1 from "@/assets/meet_google_one_carousel_promo_icon_0f14bf8fc61484b
 import image2 from "@/assets/user_edu_get_a_link_light_90698cd7b4ca04d3005c962a3756c42d.svg";
 import image3 from "@/assets/user_edu_scheduling_light_b352efa017e4f8f1ffda43e847820322.svg";
 import image4 from "@/assets/user_edu_safety_light_e04a2bbb449524ef7e49ea36d5f25b65.svg";
-import { useState } from "react";
+
+import JoinMeetingConfirmation from "../sections/LandingPage/JoinMeetingConfirmation";
 
 interface Image {
   title: string;
@@ -59,6 +62,7 @@ export default function LandingPage() {
       imgSrc: image4,
     },
   ];
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   const next = () => {
     setIndex((prev) => Math.min(images.length - 1, prev + 1));
@@ -70,6 +74,17 @@ export default function LandingPage() {
 
   const setImageAtPosition = (index: number) => {
     setIndex(index);
+  };
+
+  const confirmJoinMeeting = () => {
+    onOpen();
+  };
+
+  const navigateToMeeting = () => {
+    onClose();
+    setTimeout(() => {
+      window.location.href = "/meeting";
+    }, 1000);
   };
 
   return (
@@ -117,7 +132,7 @@ export default function LandingPage() {
                 <Input defaultValue="8561292498" size="lg" placeholder="Enter a code or link" />
               </InputGroup>
 
-              <Button size="lg" variant="unstyled">
+              <Button onClick={confirmJoinMeeting} size="lg">
                 Join
               </Button>
             </Stack>
@@ -187,6 +202,8 @@ export default function LandingPage() {
           </Box>
         </Flex>
       </Container>
+
+      <JoinMeetingConfirmation onOk={navigateToMeeting} isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

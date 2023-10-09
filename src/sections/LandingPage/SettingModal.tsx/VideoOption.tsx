@@ -8,7 +8,7 @@ export const VideoOption = (props: VideoOption) => {
   return (
     <Box>
       <Box>
-        <Box as="p" color="zlink" fontSize="14px" fontWeight="bold">
+        <Box as="p" color="zlink" fontSize="14px" fontWeight="semibold">
           Camera
         </Box>
         <Flex mt="1">
