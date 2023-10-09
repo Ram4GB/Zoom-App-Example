@@ -46,9 +46,6 @@ export default function Layout() {
                     onClick={() => setIsOpenSettingModal(true)}
                   />
                 </Tooltip>
-                <Tooltip label="Colors">
-                  <input onChange={() => {}} className="w-7 bg-white border-none" type="color" value="#319795" />
-                </Tooltip>
               </Stack>
               <Stack direction="row" display="flex" alignItems="center" ml={6}>
                 <Tooltip label="More">

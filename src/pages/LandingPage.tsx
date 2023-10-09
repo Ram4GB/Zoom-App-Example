@@ -114,7 +114,7 @@ export default function LandingPage() {
                 <InputLeftElement h="full" pointerEvents="none">
                   <FaRegKeyboard />
                 </InputLeftElement>
-                <Input size="lg" placeholder="Enter a code or link" />
+                <Input defaultValue="8561292498" size="lg" placeholder="Enter a code or link" />
               </InputGroup>
 
               <Button size="lg" variant="unstyled">

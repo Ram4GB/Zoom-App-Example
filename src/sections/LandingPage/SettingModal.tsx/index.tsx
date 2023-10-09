@@ -15,10 +15,42 @@ import { GoDeviceCameraVideo } from "react-icons/go";
 import { BiCog } from "react-icons/bi";
 import Option from "./Option";
 import { SoundOption } from "./SoundOption";
+import { useEffect, useState } from "react";
 
 type SettingModal = Omit<ModalProps, "children">;
 
 export default function SettingModal(props: SettingModal) {
+  const [audios, setAudios] = useState<MediaDeviceInfo[]>([]);
+  const [videos, setVideos] = useState<MediaDeviceInfo[]>([]);
+  const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const devices = await navigator.mediaDevices?.enumerateDevices?.();
+        const audios: MediaDeviceInfo[] = [];
+        const speakers: MediaDeviceInfo[] = [];
+        const videos: MediaDeviceInfo[] = [];
+
+        devices.forEach((device) => {
+          if (device.kind === "audioinput") {
+            audios.push(device);
+          } else if (device.kind === "audiooutput") {
+            speakers.push(device);
+          } else {
+            videos.push(device);
+          }
+        });
+
+        setAudios(audios);
+        setSpeakers(speakers);
+        setVideos(videos);
+      } catch (error) {
+        throw new Error("Not supported media");
+      }
+    })();
+  }, []);
+
   return (
     <Modal {...props} size="4xl">
       <ModalOverlay />
@@ -38,7 +70,7 @@ export default function SettingModal(props: SettingModal) {
               </Stack>
             </Box>
             <Box pl="6" pr="6" pt="6" mt="60px" w="calc(100% - 256px)">
-              <SoundOption />
+              <SoundOption audios={audios} videos={videos} speakers={speakers} />
             </Box>
           </Flex>
         </ModalBody>
