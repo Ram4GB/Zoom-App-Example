@@ -5,6 +5,7 @@ interface Option {
   icon: IconType;
   text: string;
   isActive?: boolean;
+  onClick?: () => void;
 }
 
 const Option = (props: Option) => {
@@ -21,6 +22,7 @@ const Option = (props: Option) => {
       alignItems="center"
       h="46px"
       bgColor={isActive ? "#eee" : ""}
+      onClick={props.onClick}
     >
       <IconButton
         display="flex"

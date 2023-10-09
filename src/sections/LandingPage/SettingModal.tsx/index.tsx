@@ -19,10 +19,17 @@ import { useEffect, useState } from "react";
 
 type SettingModal = Omit<ModalProps, "children">;
 
+enum TabType {
+  SOUND = "SOUND",
+  VIDEO = "VIDEO",
+  GENERAL = "GENERAL",
+}
+
 export default function SettingModal(props: SettingModal) {
   const [audios, setAudios] = useState<MediaDeviceInfo[]>([]);
   const [videos, setVideos] = useState<MediaDeviceInfo[]>([]);
   const [speakers, setSpeakers] = useState<MediaDeviceInfo[]>([]);
+  const [tab, setTab] = useState<TabType>(TabType.SOUND);
 
   useEffect(() => {
     (async function () {
@@ -52,9 +59,9 @@ export default function SettingModal(props: SettingModal) {
   }, []);
 
   return (
-    <Modal {...props} size="4xl">
-      <ModalOverlay />
-      <ModalContent>
+    <Modal {...props} blockScrollOnMount size="4xl">
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+      <ModalContent mx={4}>
         <ModalCloseButton />
         <ModalBody p={0}>
           <Flex minHeight="calc(100vh - 128px)">
@@ -64,13 +71,30 @@ export default function SettingModal(props: SettingModal) {
               </Heading>
 
               <Stack gap={0}>
-                <Option isActive icon={BsSpeaker} text="Audio" />
-                <Option icon={GoDeviceCameraVideo} text="Video" />
-                <Option icon={BiCog} text="General" />
+                <Option
+                  onClick={() => setTab(TabType.SOUND)}
+                  isActive={tab === TabType.SOUND}
+                  icon={BsSpeaker}
+                  text="Audio"
+                />
+                <Option
+                  onClick={() => setTab(TabType.VIDEO)}
+                  isActive={tab === TabType.VIDEO}
+                  icon={GoDeviceCameraVideo}
+                  text="Video"
+                />
+                <Option
+                  onClick={() => setTab(TabType.GENERAL)}
+                  isActive={tab === TabType.GENERAL}
+                  icon={BiCog}
+                  text="General"
+                />
               </Stack>
             </Box>
             <Box pl="6" pr="6" pt="6" mt="60px" w="calc(100% - 256px)">
-              <SoundOption audios={audios} videos={videos} speakers={speakers} />
+              {tab === TabType.SOUND && <SoundOption audios={audios} videos={videos} speakers={speakers} />}
+              {tab === TabType.VIDEO && <p>Video</p>}
+              {tab === TabType.GENERAL && <p>General</p>}
             </Box>
           </Flex>
         </ModalBody>
