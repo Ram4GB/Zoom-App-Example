@@ -20,7 +20,7 @@ export default function Layout() {
               <Stack direction="row" display="flex" alignItems="center">
                 <Tooltip label="Support">
                   <IconButton
-                    color="lightGrey"
+                    color="zlight-grey"
                     size="lg"
                     variant="unstyled"
                     icon={<QuestionOutlineIcon />}
@@ -29,7 +29,7 @@ export default function Layout() {
                 </Tooltip>
                 <Tooltip label="Report a problem">
                   <IconButton
-                    color="lightGrey"
+                    color="zlight-grey"
                     size="lg"
                     variant="unstyled"
                     icon={<InfoOutlineIcon />}
@@ -38,7 +38,7 @@ export default function Layout() {
                 </Tooltip>
                 <Tooltip label="Settings">
                   <IconButton
-                    color="lightGrey"
+                    color="zlight-grey"
                     size="lg"
                     variant="unstyled"
                     icon={<SettingsIcon />}
@@ -50,7 +50,7 @@ export default function Layout() {
               <Stack direction="row" display="flex" alignItems="center" ml={6}>
                 <Tooltip label="More">
                   <IconButton
-                    color="lightGrey"
+                    color="zlight-grey"
                     size="lg"
                     variant="unstyled"
                     icon={<PiDotsNineBold />}

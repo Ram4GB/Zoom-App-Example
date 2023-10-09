@@ -125,7 +125,7 @@ export default function LandingPage() {
             <Divider pt="24px" />
 
             <Box as="p" pt="24px">
-              <Link>Learn more</Link> <span color="lightGrey">about Google Meet</span>
+              <Link>Learn more</Link> <span color="zlight-grey">about Google Meet</span>
             </Box>
           </Box>
 

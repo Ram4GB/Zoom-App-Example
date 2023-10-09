@@ -23,7 +23,8 @@ const theme = extendTheme({
     },
   },
   colors: {
-    lightGrey: "#5f6368",
+    "zlight-grey": "#5f6368",
+    zlink: "#2962ff",
   },
 });
 

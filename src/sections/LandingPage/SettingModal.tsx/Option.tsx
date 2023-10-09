@@ -29,12 +29,12 @@ const Option = (props: Option) => {
         justifyContent="center"
         variant="unstyled"
         aria-label=""
-        color="lightGrey"
+        color="zlight-grey"
         fontSize="20px"
         icon={<Icon />}
         as="button"
       />
-      <Box as="p" className="text-[14px] font-semibold" color="lightGrey">
+      <Box as="p" className="text-[14px] font-semibold" color="zlight-grey">
         {text}
       </Box>
     </Box>

@@ -16,6 +16,7 @@ import { BiCog } from "react-icons/bi";
 import Option from "./Option";
 import { SoundOption } from "./SoundOption";
 import { useEffect, useState } from "react";
+import { VideoOption } from "./VideoOption";
 
 type SettingModal = Omit<ModalProps, "children">;
 
@@ -59,14 +60,14 @@ export default function SettingModal(props: SettingModal) {
   }, []);
 
   return (
-    <Modal {...props} blockScrollOnMount size="4xl">
+    <Modal {...props} blockScrollOnMount size="3xl">
       <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
       <ModalContent mx={4}>
         <ModalCloseButton />
         <ModalBody p={0}>
           <Flex minHeight="calc(100vh - 128px)">
-            <Box w="256px" borderRight="1px solid #ddd">
-              <Heading as="h2" p="6">
+            <Box flex={3} maxW="256px" borderRight="0.5px solid #ddd">
+              <Heading as="h2" p="6" fontSize="1.5rem">
                 Settings
               </Heading>
 
@@ -91,9 +92,9 @@ export default function SettingModal(props: SettingModal) {
                 />
               </Stack>
             </Box>
-            <Box pl="6" pr="6" pt="6" mt="60px" w="calc(100% - 256px)">
-              {tab === TabType.SOUND && <SoundOption audios={audios} videos={videos} speakers={speakers} />}
-              {tab === TabType.VIDEO && <p>Video</p>}
+            <Box flex={7} pl="6" pr="6" pt="6" mt="60px" w="calc(100%)">
+              {tab === TabType.SOUND && <SoundOption audios={audios} speakers={speakers} />}
+              {tab === TabType.VIDEO && <VideoOption videos={videos} />}
               {tab === TabType.GENERAL && <p>General</p>}
             </Box>
           </Flex>
