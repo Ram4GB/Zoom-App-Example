@@ -6,6 +6,7 @@ import useOnlyShowGalleryView from "./hooks/useOnlyShowGalleryView";
 import useResizeZoom from "./hooks/useResizeZoom.ts";
 import useZoomDebug from "./hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
+import useOnlyShowBlurBackground from "./hooks/useOnlyShowBlurBackground/index.ts";
 
 enum ROLE {
   HOST = 1,
@@ -40,6 +41,9 @@ function App() {
   useResizeZoom(zoomClient, {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
+  });
+  useOnlyShowBlurBackground(zoomClient, {
+    enabled: !isMod,
   });
 
   const loadZoom = async () => {
