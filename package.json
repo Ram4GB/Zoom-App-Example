@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-basic-ssl": "^1.0.1",
-    "@zoomus/websdk": "2.17.0",
+    "@zoomus/websdk": "2.16.0",
     "jsrsasign": "^10.8.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
