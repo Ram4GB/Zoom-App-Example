@@ -9,7 +9,7 @@ const theme = extendTheme({
   components: {
     Heading: {
       baseStyle: {
-        fontFamily: "Menlo",
+        fontFamily: "Inter",
       },
     },
     Link: {
