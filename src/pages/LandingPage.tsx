@@ -206,7 +206,16 @@ export default function LandingPage() {
         </Flex>
       </Container>
 
-      <JoinMeetingConfirmation loading={loading} onOk={navigateToMeeting} isOpen={isOpen} onClose={onClose} />
+      <JoinMeetingConfirmation
+        loading={loading}
+        onOk={navigateToMeeting}
+        isOpen={isOpen}
+        onClose={() => {
+          if (!loading) {
+            onClose();
+          }
+        }}
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Container, Box, Flex, IconButton, Stack, Tooltip, Avatar } from "@chakra-ui/react";
 import { SettingsIcon, QuestionOutlineIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { PiDotsNineBold } from "react-icons/pi";
@@ -6,18 +6,29 @@ import logo from "@/assets/google_meet_horizontal_wordmark_2020q4_2x_icon_124_40
 import myLogo from "@/assets/IMG_0158_2_Large.jpeg";
 import SettingModal from "../sections/LandingPage/SettingModal.tsx";
 import { useState } from "react";
+import dayjs from "dayjs";
 
-export default function Layout() {
+interface Layout {
+  fullscreen?: string[];
+}
+
+export default function Layout(props: Layout) {
   const [isOpenSettingModal, setIsOpenSettingModal] = useState(false);
+  const { pathname } = useLocation();
+
+  const isFullScreen = props.fullscreen?.includes(pathname);
 
   return (
     <>
-      <Container maxW="container.xl">
-        <Box p={2} as="header" h="64px">
+      <Container maxW={isFullScreen ? "none" : "container.xl"} p={isFullScreen ? 0 : 2}>
+        <Box p={isFullScreen ? 0 : 2} as="header" h="64px" display={isFullScreen ? "none" : ""}>
           <Flex alignItems="center">
             <img className="w-32 h-10" src={logo} alt="" />
             <Box ml="auto" display="flex">
               <Stack direction="row" display="flex" alignItems="center">
+                <Box as="p" color="zlight-grey" fontSize="1.1rem" cursor="default">
+                  {dayjs().format("h:m a • ddd, MMM D")}
+                </Box>
                 <Tooltip label="Support">
                   <IconButton
                     color="zlight-grey"

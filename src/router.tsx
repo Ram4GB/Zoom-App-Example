@@ -7,7 +7,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <Layout fullscreen={["/meeting"]} />,
     children: [
       {
         path: "",

@@ -1,11 +1,10 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
 import { generateSignature } from "../utils";
 import useOnlyShowGalleryView from "../hooks/useOnlyShowGalleryView";
-import useResizeZoom from "../hooks/useResizeZoom.ts";
 import useZoomDebug from "../hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
-import { Button, FormControl, Input, FormLabel, Select, Container, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/layout";
 
 enum ROLE {
   HOST = 1,
@@ -18,7 +17,7 @@ interface Form {
   password: string;
 }
 
-function App() {
+function Zoom() {
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
   const meetingNumber = "8561292498";
   const password = "Hh9z3T";
@@ -30,19 +29,14 @@ function App() {
   const [isMod] = useState(true);
   const clientRef = useRef<typeof EmbeddedClient>();
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
-  const [hideControl, setHideControl] = useState(false);
 
   useZoomDebug(zoomClient);
   useOnlyShowGalleryView(zoomClient, {
     enabled: !isMod,
     container: document.getElementById("container") as HTMLElement,
   });
-  useResizeZoom(zoomClient, {
-    zoomAppId: "zoom-app",
-    container: document.getElementById("container") as HTMLElement,
-  });
 
-  const loadZoom = async () => {
+  const loadZoom = useCallback(async () => {
     const client = ZoomMtgEmbedded.createClient();
 
     clientRef.current = client;
@@ -76,14 +70,12 @@ function App() {
     client.on("connection-change", (payload) => {
       if (payload.state === "Connected") {
         if (!isMod) document.body.classList.add("only-gallery-view");
-        setHideControl(true);
       } else {
         document.body.classList.remove("only-gallery-view");
         ZoomMtgEmbedded.destroyClient();
         clientRef.current = undefined;
         window.zoomClient = null;
         setZoomClient(null);
-        setHideControl(false);
       }
     });
 
@@ -101,40 +93,19 @@ function App() {
     });
 
     setZoomClient(client);
-  };
+  }, [isMod, value.meetingNumber, value.password, value.userName]);
+
+  useEffect(() => {
+    // loadZoom();
+  }, [loadZoom]);
 
   return (
-    <Container maxW="container.xl">
-      <Grid templateRows="auto" templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={4}>
-        <GridItem colSpan={1} rowSpan={1}>
-          <div id="zoom-app" className="zoom-app" ref={meetingSDKElement}></div>
-        </GridItem>
-        <GridItem colSpan={1} rowSpan={1}>
-          {!hideControl && (
-            <form action="">
-              <FormControl>
-                <FormLabel>Username</FormLabel>
-                <Input />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Role</FormLabel>
-                <Select>
-                  <option value={ROLE.PARTICIPANT}>Participant</option>
-                  <option value={ROLE.HOST}>Host</option>
-                </Select>
-              </FormControl>
-              <Button size="md" colorScheme="teal" type="button" onClick={loadZoom}>
-                load zoom
-                <a href="#"></a>
-              </Button>
-            </form>
-          )}
-        </GridItem>
-      </Grid>
-
-      <pre id="log"></pre>
-    </Container>
+    <Flex h="full" w="full">
+      <Box flex="6" bgColor="black">
+        {/* <div id="zoom-app" className="zoom-app" ref={meetingSDKElement}></div> */}
+      </Box>
+    </Flex>
   );
 }
 
-export default App;
+export default Zoom;
