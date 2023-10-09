@@ -6,6 +6,7 @@ body.only-gallery-view [id^="menu-list-icon-thumbnail"] {
   display: none;
 }
 
-body.only-gallery-view [title="Ribbon"] {
+/* body.only-gallery-view [title="Ribbon"], */
+body.only-gallery-view .zmwebsdk-MuiToolbar-root > div:nth-child(2) button {
   display: none;
 }
