@@ -5,3 +5,7 @@ body.only-gallery-view div[aria-label="view mode tabs"] {
 body.only-gallery-view [id^="menu-list-icon-thumbnail"] {
   display: none;
 }
+
+body.only-gallery-view [title="Ribbon"] {
+  display: none;
+}

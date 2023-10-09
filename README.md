@@ -28,12 +28,12 @@ npm run dev:goat
 Login your account to [Zoom](https://zoom.us/), create a meeting room and get `Meeting number` and `Password`
 
 Fill your details to app
-![alt](./images/CleanShot%202023-09-20%20at%2015.46.19@2x.png)
-![alt](./images/CleanShot%202023-09-28%20at%2012.09.29@2x.png)
+Updating...
 
 ## Supported hook:
 
 - `useOnlyShowGalleryView` makes default layout become gallery view.
+  > Some browser does not support full Zoom feature. Please checkout [supported list](https://developers.zoom.us/docs/meeting-sdk/web/browser-support/) to see if your device is supported.
 - `useResizeZoom` make zoom resize more flexible in container, it always fit in container.
 
 ## Payload sample that send to create bot
