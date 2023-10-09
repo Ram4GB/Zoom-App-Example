@@ -63,6 +63,7 @@ export default function LandingPage() {
     },
   ];
   const { isOpen, onClose, onOpen } = useDisclosure();
+  const [loading, setLoading] = useState(false);
 
   const next = () => {
     setIndex((prev) => Math.min(images.length - 1, prev + 1));
@@ -81,8 +82,10 @@ export default function LandingPage() {
   };
 
   const navigateToMeeting = () => {
-    onClose();
+    setLoading(true);
+
     setTimeout(() => {
+      onClose();
       window.location.href = "/meeting";
     }, 1000);
   };
@@ -203,7 +206,7 @@ export default function LandingPage() {
         </Flex>
       </Container>
 
-      <JoinMeetingConfirmation onOk={navigateToMeeting} isOpen={isOpen} onClose={onClose} />
+      <JoinMeetingConfirmation loading={loading} onOk={navigateToMeeting} isOpen={isOpen} onClose={onClose} />
     </>
   );
 }

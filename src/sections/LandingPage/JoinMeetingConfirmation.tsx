@@ -12,11 +12,12 @@ import { LegacyRef, RefObject, useRef } from "react";
 
 interface JoinMeetingConfirmation {
   isOpen: boolean;
+  loading: boolean;
   onClose: () => void;
   onOk: () => void;
 }
 
-const JoinMeetingConfirmation = ({ isOpen, onClose, onOk }: JoinMeetingConfirmation) => {
+const JoinMeetingConfirmation = ({ isOpen, loading, onClose, onOk }: JoinMeetingConfirmation) => {
   const cancelRef = useRef<RefObject<FocusableElement>>();
 
   return (
@@ -31,13 +32,13 @@ const JoinMeetingConfirmation = ({ isOpen, onClose, onOk }: JoinMeetingConfirmat
             Join Meeting
           </AlertDialogHeader>
 
-          <AlertDialogBody>Are you sure to join meeting</AlertDialogBody>
+          <AlertDialogBody>Are you sure to join meeting?</AlertDialogBody>
 
           <AlertDialogFooter>
             <Button ref={cancelRef as unknown as LegacyRef<HTMLButtonElement>} onClick={onClose}>
               Cancel
             </Button>
-            <Button colorScheme="teal" onClick={onOk} ml={3}>
+            <Button isLoading={loading} loadingText="Joining..." colorScheme="teal" onClick={onOk} ml={3}>
               Ok, let's go
             </Button>
           </AlertDialogFooter>
