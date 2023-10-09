@@ -96,13 +96,13 @@ function Zoom() {
   }, [isMod, value.meetingNumber, value.password, value.userName]);
 
   useEffect(() => {
-    // loadZoom();
+    loadZoom();
   }, [loadZoom]);
 
   return (
     <Flex h="full" w="full">
       <Box flex="6" bgColor="black">
-        {/* <div id="zoom-app" className="zoom-app" ref={meetingSDKElement}></div> */}
+        <div id="zoom-app" className="zoom-app" ref={meetingSDKElement}></div>
       </Box>
     </Flex>
   );
