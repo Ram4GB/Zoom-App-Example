@@ -1,22 +1,15 @@
 import { EmbeddedClient } from "@zoomus/websdk/embedded";
-import { useEffect } from "react";
 import waitForElement from "../../utils/wait-for-element";
-import useZoom from "../useZoom";
+import { useCallback, useRef } from "react";
 
-const useAutoTurnAudioPermission = (client: typeof EmbeddedClient | null) => {
-  const { muteSelf } = useZoom(client);
+const useAutoTurnAudioPermission = () => {
+  const mutationObserver = useRef<MutationObserver>();
 
-  useEffect(() => {
-    if (!client) return;
+  const autoTurnAudioPermissionHandler = useCallback((client: typeof EmbeddedClient | null) => {
+    const mutationObserver = new MutationObserver(async () => {
+      const audioBtn = await waitForElement("[title=Audio]");
 
-    (async function () {
-      const audioBtn = await Promise.race([
-        waitForElement("[title=Audio]"),
-        waitForElement("[title=Mute]"),
-        waitForElement("[title=Audio]"),
-      ]);
-
-      if (!audioBtn) return;
+      if (!audioBtn || !client) return;
 
       (audioBtn as unknown as HTMLButtonElement).click();
 
@@ -27,10 +20,21 @@ const useAutoTurnAudioPermission = (client: typeof EmbeddedClient | null) => {
       const title = (muteOrUnmute as HTMLButtonElement).getAttribute("title");
 
       if (title === "Mute") {
-        muteSelf();
+        client.mute(true, client.getCurrentUser()?.userId);
       }
-    })();
-  }, [client, muteSelf]);
+    });
+
+    mutationObserver.observe(document.body, { attributes: true, childList: true, subtree: true });
+  }, []);
+
+  const disconnect = useCallback(() => {
+    mutationObserver.current?.disconnect();
+  }, []);
+
+  return {
+    autoTurnAudioPermissionHandler,
+    disconnect,
+  };
 };
 
 export default useAutoTurnAudioPermission;

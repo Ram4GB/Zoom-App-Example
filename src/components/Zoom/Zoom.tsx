@@ -6,7 +6,7 @@ import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
 import "./index.scss";
-import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
+import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
 
 enum ROLE {
   HOST = 1,
@@ -23,29 +23,27 @@ interface Props {
   onEnd?: () => void;
 }
 
+const meetingNumber = "8561292498";
+const password = "Hh9z3T";
+
 function Zoom(props: Props) {
+  const { onEnd } = props;
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
-  const meetingNumber = "8561292498";
-  const password = "Hh9z3T";
+  const clientRef = useRef<typeof EmbeddedClient>();
   const [value] = useState<Form>({
     userName: faker.person.fullName(),
     meetingNumber,
     password,
   });
   const [isMod] = useState(true);
-  const clientRef = useRef<typeof EmbeddedClient>();
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
-  const { onEnd } = props;
 
   useZoomDebug(zoomClient);
   useOnlyShowGalleryView(zoomClient, {
     enabled: !isMod,
     container: document.getElementById("container") as HTMLElement,
   });
-  useResizeZoom(zoomClient, {
-    container: document.getElementById("container") as HTMLElement,
-    zoomAppId: "zoom-app",
-  });
+  const { autoTurnAudioPermissionHandler, disconnect } = useAutoTurnAudioPermission();
 
   const loadZoom = useCallback(async () => {
     const client = ZoomMtgEmbedded.createClient();
@@ -95,6 +93,8 @@ function Zoom(props: Props) {
       }
     });
 
+    autoTurnAudioPermissionHandler(client);
+
     await client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
       signature: generateSignature(
@@ -109,11 +109,17 @@ function Zoom(props: Props) {
     });
 
     setZoomClient(client);
-  }, [isMod, value.meetingNumber, value.password, value.userName, onEnd]);
+
+    return () => {};
+  }, [isMod, value.meetingNumber, value.password, value.userName, onEnd, autoTurnAudioPermissionHandler]);
 
   useEffect(() => {
     loadZoom();
-  }, [loadZoom]);
+
+    return () => {
+      disconnect();
+    };
+  }, [loadZoom, disconnect]);
 
   return (
     <Flex>

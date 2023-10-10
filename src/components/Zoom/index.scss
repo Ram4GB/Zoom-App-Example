@@ -1,0 +1,10 @@
+body {
+  overflow: hidden;
+}
+
+[id^="suspension-view-tabpanel"] {
+  --width-screen: 100vw;
+
+  height: calc(100vh - 34px - 42px);
+  width: var(--width-screen);
+}
