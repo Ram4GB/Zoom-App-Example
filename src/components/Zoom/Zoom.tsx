@@ -77,6 +77,11 @@ function Zoom(props: Props) {
         toolbar: {
           buttons: [],
         },
+        activeApps: {
+          popper: {
+            placement: "top-start",
+          },
+        },
       },
     });
 
@@ -93,7 +98,9 @@ function Zoom(props: Props) {
       }
     });
 
-    autoTurnAudioPermissionHandler(client);
+    client.on("audio-statistic-data-change", () => {
+      console.log("ops");
+    });
 
     await client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
@@ -107,6 +114,13 @@ function Zoom(props: Props) {
       password: value.password,
       userName: value.userName,
     });
+
+    // TODO: There is no way to resolve this issue
+    // {
+    //   "type": "INVALID_OPERATION",
+    //   "reason": "Computer audio has been loading, please wait."
+    // }
+    autoTurnAudioPermissionHandler(client);
 
     setZoomClient(client);
 

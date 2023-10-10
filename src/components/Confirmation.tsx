@@ -41,7 +41,7 @@ const Confirmation = ({
       isCentered
     >
       <AlertDialogOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)">
-        <AlertDialogContent>
+        <AlertDialogContent mx={4}>
           <AlertDialogHeader fontSize="lg" fontWeight="bold" pb={0}>
             {title}
           </AlertDialogHeader>

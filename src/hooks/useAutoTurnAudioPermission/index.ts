@@ -24,7 +24,13 @@ const useAutoTurnAudioPermission = () => {
       }
     });
 
-    mutationObserver.observe(document.body, { attributes: true, childList: true, subtree: true });
+    console.log('document.body.querySelector("#zoom-app")', document.body.querySelector("#zoom-app"));
+
+    mutationObserver.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
   }, []);
 
   const disconnect = useCallback(() => {

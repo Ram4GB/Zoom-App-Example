@@ -26,7 +26,7 @@ export default function Layout(props: Layout) {
             <img className="w-32 h-10" src={logo} alt="" />
             <Box ml="auto" display="flex">
               <Stack direction="row" display="flex" alignItems="center">
-                <Box as="p" color="zlight-grey" fontSize="1.1rem" cursor="default">
+                <Box className="hidden lg:block" as="p" color="zlight-grey" fontSize="1.1rem" cursor="default">
                   {dayjs().format("h:m a • ddd, MMM D")}
                 </Box>
                 <Tooltip label="Support">
@@ -36,6 +36,7 @@ export default function Layout(props: Layout) {
                     variant="unstyled"
                     icon={<QuestionOutlineIcon />}
                     aria-label="QA"
+                    display={{ base: "none", lg: "inline" }}
                   />
                 </Tooltip>
                 <Tooltip label="Report a problem">
@@ -45,6 +46,7 @@ export default function Layout(props: Layout) {
                     variant="unstyled"
                     icon={<InfoOutlineIcon />}
                     aria-label="Info"
+                    display={{ base: "none", lg: "inline" }}
                   />
                 </Tooltip>
                 <Tooltip label="Settings">
@@ -58,7 +60,7 @@ export default function Layout(props: Layout) {
                   />
                 </Tooltip>
               </Stack>
-              <Stack direction="row" display="flex" alignItems="center" ml={6}>
+              <Stack direction="row" display="flex" alignItems="center" ml={{ base: 0, lg: 6 }}>
                 <Tooltip label="More">
                   <IconButton
                     color="zlight-grey"

@@ -165,7 +165,11 @@ export default function LandingPage() {
                 aria-label=""
                 icon={<ChevronLeftIcon />}
               />
-              <Image src={images[index].imgSrc} w={{ base: "full", lg: 330 }} h={{ base: "auto", lg: 330 }} />
+              <Image
+                src={images[index].imgSrc}
+                w={{ base: "calc(100vw - 111px)", lg: 330 }}
+                h={{ base: "auto", lg: 330 }}
+              />
               <IconButton
                 disabled={index === images.length - 1 ? true : false}
                 onClick={next}
