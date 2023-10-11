@@ -1,0 +1,16 @@
+@media (min-width: theme("screens.lg")) {
+  body {
+    @apply overflow-hidden;
+  }
+}
+
+#zoom-app [id^="suspension-view-tabpanel"] {
+  --width-screen: 100vw;
+
+  height: calc(100vh - 34px - 42px);
+  width: var(--width-screen);
+}
+
+[role="dialog"] {
+  @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 #{!important};
+}

@@ -1,36 +1,65 @@
 import { EmbeddedClient } from "@zoomus/websdk/embedded";
-import { useEffect } from "react";
 import waitForElement from "../../utils/wait-for-element";
-import useZoom from "../useZoom";
+import { useCallback, useRef } from "react";
+import useToast from "../useToast";
 
-const useAutoTurnAudioPermission = (client: typeof EmbeddedClient | null) => {
-  const { muteSelf } = useZoom(client);
+const useAutoTurnAudioPermission = () => {
+  const mutationObserver = useRef<MutationObserver>();
+  const toast = useToast();
 
-  useEffect(() => {
-    if (!client) return;
+  const autoTurnAudioPermissionHandler = useCallback(
+    async (client: typeof EmbeddedClient | null) => {
+      mutationObserver.current = new MutationObserver(async () => {
+        const audioBtn = await waitForElement("[title=Audio]");
 
-    (async function () {
-      const audioBtn = await Promise.race([
-        waitForElement("[title=Audio]"),
-        waitForElement("[title=Mute]"),
-        waitForElement("[title=Audio]"),
-      ]);
+        if (!audioBtn || !client) return;
 
-      if (!audioBtn) return;
+        (audioBtn as unknown as HTMLButtonElement).click();
 
-      (audioBtn as unknown as HTMLButtonElement).click();
+        const muteOrUnmute = await Promise.race([waitForElement("[title=Mute]"), waitForElement("[title=Unmute]")]);
 
-      const muteOrUnmute = await Promise.race([waitForElement("[title=Mute]"), waitForElement("[title=Unmute]")]);
+        if (!muteOrUnmute) return;
 
-      if (!muteOrUnmute) return;
+        const title = (muteOrUnmute as HTMLButtonElement).getAttribute("title");
 
-      const title = (muteOrUnmute as HTMLButtonElement).getAttribute("title");
+        if (title === "Mute") {
+          client.mute(true, client.getCurrentUser()?.userId).then(() => {
+            if (mutationObserver.current) {
+              mutationObserver.current.disconnect();
+            }
+          });
+        }
+      });
 
-      if (title === "Mute") {
-        muteSelf();
+      console.log('document.body.querySelector("#zoom-app")', document.body.querySelector("#zoom-app"));
+
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        mutationObserver.current.observe(document.body, {
+          attributes: true,
+          childList: true,
+          subtree: true,
+        });
+      } catch (error) {
+        toast.warning({
+          title: "Microphone is disabled",
+          description: "Please turn your microphone permission on!",
+          duration: null,
+        });
+        return;
       }
-    })();
-  }, [client, muteSelf]);
+    },
+    [toast],
+  );
+
+  const disconnect = useCallback(() => {
+    mutationObserver.current?.disconnect();
+  }, []);
+
+  return {
+    autoTurnAudioPermissionHandler,
+    disconnect,
+  };
 };
 
 export default useAutoTurnAudioPermission;
