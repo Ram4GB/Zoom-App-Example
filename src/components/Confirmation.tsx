@@ -12,7 +12,7 @@ import { LegacyRef, RefObject, useRef } from "react";
 
 interface Confirmation {
   isOpen: boolean;
-  loading: boolean;
+  loading?: boolean;
   title?: string;
   description?: string;
   confirmText?: string;

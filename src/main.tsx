@@ -31,7 +31,7 @@ const theme = extendTheme({
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
 root.render(
-  <ChakraProvider theme={theme}>
+  <ChakraProvider theme={theme} toastOptions={{ defaultOptions: { position: "top", isClosable: true } }}>
     <RouterProvider router={router} />
   </ChakraProvider>,
 );

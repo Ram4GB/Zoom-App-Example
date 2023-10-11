@@ -7,6 +7,7 @@ import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
 import "./index.scss";
 import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
+import CustomToolbar from "./CustomToolbar.tsx";
 
 enum ROLE {
   HOST = 1,
@@ -20,14 +21,14 @@ interface Form {
 }
 
 interface Props {
-  onEnd?: () => void;
+  onEnded?: () => void;
 }
 
 const meetingNumber = "8561292498";
 const password = "Hh9z3T";
 
 function Zoom(props: Props) {
-  const { onEnd } = props;
+  const { onEnded } = props;
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<typeof EmbeddedClient>();
   const [value] = useState<Form>({
@@ -59,7 +60,7 @@ function Zoom(props: Props) {
       zoomAppRoot: meetingSDKElement.current as unknown as HTMLElement,
       language: "en-US",
       customize: {
-        meetingInfo: ["topic", "host", "mn", "pwd", "telPwd", "invite", "participant", "dc", "enctype"],
+        meetingInfo: ["topic", "host", "mn", "pwd", "participant", "dc", "enctype"],
         video: {
           viewSizes: {
             default: {
@@ -94,12 +95,8 @@ function Zoom(props: Props) {
         clientRef.current = undefined;
         window.zoomClient = null;
         setZoomClient(null);
-        onEnd?.();
+        onEnded?.();
       }
-    });
-
-    client.on("audio-statistic-data-change", () => {
-      console.log("ops");
     });
 
     await client.join({
@@ -125,7 +122,7 @@ function Zoom(props: Props) {
     setZoomClient(client);
 
     return () => {};
-  }, [isMod, value.meetingNumber, value.password, value.userName, onEnd, autoTurnAudioPermissionHandler]);
+  }, [isMod, value.meetingNumber, value.password, value.userName, onEnded, autoTurnAudioPermissionHandler]);
 
   useEffect(() => {
     loadZoom();
@@ -138,8 +135,13 @@ function Zoom(props: Props) {
   return (
     <Flex>
       <Box flex="6" bgColor="black">
-        <div id="zoom-app" className="zoom-app min-h-screen min-w-full h-screen w-screen" ref={meetingSDKElement}></div>
+        <div
+          id="zoom-app"
+          className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
+          ref={meetingSDKElement}
+        ></div>
       </Box>
+      <CustomToolbar />
     </Flex>
   );
 }
