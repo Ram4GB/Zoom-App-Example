@@ -15,6 +15,10 @@
   @apply h-full;
 }
 
+#zoom-app .react-draggable > .zmwebsdk-MuiPaper-rounded > .zmwebsdk-MuiPaper-rounded {
+  @apply w-screen;
+}
+
 [role="dialog"] {
   @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 #{!important};
 }
