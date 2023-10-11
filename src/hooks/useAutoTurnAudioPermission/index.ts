@@ -6,7 +6,7 @@ const useAutoTurnAudioPermission = () => {
   const mutationObserver = useRef<MutationObserver>();
 
   const autoTurnAudioPermissionHandler = useCallback((client: typeof EmbeddedClient | null) => {
-    const mutationObserver = new MutationObserver(async () => {
+    mutationObserver.current = new MutationObserver(async () => {
       const audioBtn = await waitForElement("[title=Audio]");
 
       if (!audioBtn || !client) return;
@@ -20,13 +20,17 @@ const useAutoTurnAudioPermission = () => {
       const title = (muteOrUnmute as HTMLButtonElement).getAttribute("title");
 
       if (title === "Mute") {
-        client.mute(true, client.getCurrentUser()?.userId);
+        client.mute(true, client.getCurrentUser()?.userId).then(() => {
+          if (mutationObserver.current) {
+            mutationObserver.current.disconnect();
+          }
+        });
       }
     });
 
     console.log('document.body.querySelector("#zoom-app")', document.body.querySelector("#zoom-app"));
 
-    mutationObserver.observe(document.body, {
+    mutationObserver.current.observe(document.body, {
       attributes: true,
       childList: true,
       subtree: true,
