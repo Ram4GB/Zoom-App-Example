@@ -8,7 +8,15 @@
   --width-screen: 100vw;
 
   height: calc(100vh - 34px - 42px);
-  width: var(--width-screen);
+  width: calc(var(--width-screen) - 4px);
+}
+
+#zoom-app [id^="suspension-view-tabpanel"] > div:nth-child(1) {
+  @apply h-full;
+}
+
+#zoom-app .react-draggable > .zmwebsdk-MuiPaper-rounded > .zmwebsdk-MuiPaper-rounded {
+  @apply w-screen;
 }
 
 [role="dialog"] {

@@ -8,6 +8,7 @@ import { Box, Flex } from "@chakra-ui/layout";
 import "./index.scss";
 import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
 import CustomToolbar from "./CustomToolbar.tsx";
+import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
 
 enum ROLE {
   HOST = 1,
@@ -45,6 +46,10 @@ function Zoom(props: Props) {
     container: document.getElementById("container") as HTMLElement,
   });
   const { autoTurnAudioPermissionHandler, disconnect } = useAutoTurnAudioPermission();
+  useResizeZoom(zoomClient, {
+    zoomAppId: "zoom-app",
+    container: document.getElementById("container") as HTMLElement,
+  });
 
   const loadZoom = useCallback(async () => {
     const client = ZoomMtgEmbedded.createClient();
@@ -134,7 +139,7 @@ function Zoom(props: Props) {
 
   return (
     <Flex>
-      <Box flex="6" bgColor="black">
+      <Box id="container" flex="6" bgColor="black">
         <div
           id="zoom-app"
           className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
