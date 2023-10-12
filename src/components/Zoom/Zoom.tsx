@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
-import { generateSignature } from "../../utils/index.ts";
 import useOnlyShowGalleryView from "../../hooks/useOnlyShowGalleryView/index.ts";
 import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
@@ -9,11 +8,7 @@ import "./index.scss";
 import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
 import CustomToolbar from "./CustomToolbar.tsx";
 import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
-
-enum ROLE {
-  HOST = 1,
-  PARTICIPANT = 0,
-}
+import axios from "axios";
 
 interface Form {
   userName: string;
@@ -104,14 +99,11 @@ function Zoom(props: Props) {
       }
     });
 
-    await client.join({
+    const payload = await axios.get<{ token: string }>("https://upbeat-insidious-archeology.glitch.me/token");
+
+    client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
-      signature: generateSignature(
-        import.meta.env.VITE_ZOOM_SDK_KEY,
-        import.meta.env.VITE_ZOOM_CLIENT_SECRET,
-        value.meetingNumber,
-        isMod ? ROLE.HOST : ROLE.PARTICIPANT,
-      ),
+      signature: payload.data.token,
       meetingNumber: value.meetingNumber,
       password: value.password,
       userName: value.userName,
