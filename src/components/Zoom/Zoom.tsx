@@ -101,7 +101,7 @@ function Zoom(props: Props) {
 
     const payload = await axios.get<{ token: string }>("https://upbeat-insidious-archeology.glitch.me/token");
 
-    client.join({
+    await client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
       signature: payload.data.token,
       meetingNumber: value.meetingNumber,
