@@ -9,6 +9,8 @@ import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/i
 import CustomToolbar from "./CustomToolbar.tsx";
 import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
 import axios from "axios";
+import Modal from "../Modal.tsx";
+import { useDisclosure } from "@chakra-ui/react";
 
 interface Form {
   userName: string;
@@ -34,6 +36,8 @@ function Zoom(props: Props) {
   });
   const [isMod] = useState(true);
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { onClose } = useDisclosure();
 
   useZoomDebug(zoomClient);
   useOnlyShowGalleryView(zoomClient, {
@@ -109,14 +113,11 @@ function Zoom(props: Props) {
       userName: value.userName,
     });
 
-    // TODO: There is no way to resolve this issue
-    // {
-    //   "type": "INVALID_OPERATION",
-    //   "reason": "Computer audio has been loading, please wait."
-    // }
+    // https://devforum.zoom.us/t/microphone-turn-on-problem/88569
     autoTurnAudioPermissionHandler(client);
 
     setZoomClient(client);
+    setLoading(false);
 
     return () => {};
   }, [isMod, value.meetingNumber, value.password, value.userName, onEnded, autoTurnAudioPermissionHandler]);
@@ -130,16 +131,27 @@ function Zoom(props: Props) {
   }, [loadZoom, disconnect]);
 
   return (
-    <Flex>
-      <Box id="container" flex="6" bgColor="black">
-        <div
-          id="zoom-app"
-          className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
-          ref={meetingSDKElement}
-        ></div>
-      </Box>
-      <CustomToolbar />
-    </Flex>
+    <>
+      <Flex>
+        <Box id="container" flex="6" bgColor="black">
+          <div
+            id="zoom-app"
+            className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
+            ref={meetingSDKElement}
+          ></div>
+        </Box>
+        <CustomToolbar />
+      </Flex>
+
+      <Modal
+        title="Notification"
+        description="Please wait! We are initializing your meeting. This will take a minute."
+        isOpen={loading}
+        onClose={onClose}
+        hideCancelBtn
+        hideCloseIcon
+      />
+    </>
   );
 }
 
