@@ -1,18 +1,16 @@
 import { Container } from "@chakra-ui/layout";
 import Zoom from "../components/Zoom/Zoom";
-import { useNavigate } from "react-router";
 import { useDisclosure } from "@chakra-ui/hooks";
 import Confirmation from "../components/Confirmation";
 import { useState } from "react";
 
 export default function Meeting() {
-  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
 
   const onOk = () => {
     setLoading(true);
-    setTimeout(() => navigate("/"), 1000);
+    setTimeout(() => (window.location.href = "/"), 100);
   };
 
   return (

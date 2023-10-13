@@ -11,29 +11,40 @@ import {
 
 interface Modal {
   isOpen: boolean;
-  loading: boolean;
+  loading?: boolean;
   title?: string;
   description?: string;
   confirmText?: string;
   loadingText?: string;
+  hideCancelBtn?: boolean;
+  hideCloseIcon?: boolean;
   onClose: () => void;
-  onOk: () => void;
+  onOk?: () => void;
 }
 
 const Modal = (props: Modal) => {
+  const { isOpen, loading, title, description, confirmText, loadingText, hideCancelBtn, hideCloseIcon, onClose, onOk } =
+    props;
+
   return (
-    <ModalChakra isOpen={props.isOpen} onClose={props.onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Modal Title</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody></ModalBody>
+    <ModalChakra isCentered isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+      <ModalContent mx={4}>
+        <ModalHeader pb={0}>{title}</ModalHeader>
+        {!hideCloseIcon && <ModalCloseButton />}
+        <ModalBody>{description}</ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={props.onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
+          {!hideCancelBtn && (
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          )}
+          {onOk && (
+            <Button isLoading={loading} loadingText={loadingText} onClick={onOk} colorScheme="teal" variant="ghost">
+              {confirmText}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </ModalChakra>

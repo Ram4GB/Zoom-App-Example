@@ -34,12 +34,10 @@ export default function useResizeZoom(
     const resizeObserver = new ResizeObserver(function () {
       if (!zoomAppEl) return;
 
-      const { width } = zoomAppEl.getBoundingClientRect();
-
-      updateZoomSize(width);
+      updateZoomSize(Math.min(1300, window.document.documentElement.clientWidth));
     });
 
-    resizeObserver.observe(options.container);
+    resizeObserver.observe(zoomAppEl);
 
     return () => {
       resizeObserver.disconnect();

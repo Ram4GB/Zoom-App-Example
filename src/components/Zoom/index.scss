@@ -8,9 +8,17 @@
   --width-screen: 100vw;
 
   height: calc(100vh - 34px - 42px);
-  width: var(--width-screen);
+  width: calc(var(--width-screen) - 4px);
 }
 
-[role="dialog"] {
+#zoom-app [id^="suspension-view-tabpanel"] > div:nth-child(1) {
+  @apply h-full;
+}
+
+#zoom-app .react-draggable > .zmwebsdk-MuiPaper-rounded > .zmwebsdk-MuiPaper-rounded {
+  @apply w-screen;
+}
+
+[role="dialog"]:not([class*="chakra"]) {
   @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 #{!important};
 }
