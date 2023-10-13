@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
-import { generateSignature } from "../../utils/index.ts";
 import useOnlyShowGalleryView from "../../hooks/useOnlyShowGalleryView/index.ts";
 import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
@@ -9,11 +8,9 @@ import "./index.scss";
 import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
 import CustomToolbar from "./CustomToolbar.tsx";
 import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
-
-enum ROLE {
-  HOST = 1,
-  PARTICIPANT = 0,
-}
+import axios from "axios";
+import Modal from "../Modal.tsx";
+import { useDisclosure } from "@chakra-ui/react";
 
 interface Form {
   userName: string;
@@ -39,6 +36,8 @@ function Zoom(props: Props) {
   });
   const [isMod] = useState(true);
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { onClose } = useDisclosure();
 
   useZoomDebug(zoomClient);
   useOnlyShowGalleryView(zoomClient, {
@@ -104,27 +103,21 @@ function Zoom(props: Props) {
       }
     });
 
+    const payload = await axios.get<{ token: string }>("https://upbeat-insidious-archeology.glitch.me/token");
+
     await client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
-      signature: generateSignature(
-        import.meta.env.VITE_ZOOM_SDK_KEY,
-        import.meta.env.VITE_ZOOM_CLIENT_SECRET,
-        value.meetingNumber,
-        isMod ? ROLE.HOST : ROLE.PARTICIPANT,
-      ),
+      signature: payload.data.token,
       meetingNumber: value.meetingNumber,
       password: value.password,
       userName: value.userName,
     });
 
-    // TODO: There is no way to resolve this issue
-    // {
-    //   "type": "INVALID_OPERATION",
-    //   "reason": "Computer audio has been loading, please wait."
-    // }
+    // https://devforum.zoom.us/t/microphone-turn-on-problem/88569
     autoTurnAudioPermissionHandler(client);
 
     setZoomClient(client);
+    setLoading(false);
 
     return () => {};
   }, [isMod, value.meetingNumber, value.password, value.userName, onEnded, autoTurnAudioPermissionHandler]);
@@ -138,16 +131,27 @@ function Zoom(props: Props) {
   }, [loadZoom, disconnect]);
 
   return (
-    <Flex>
-      <Box id="container" flex="6" bgColor="black">
-        <div
-          id="zoom-app"
-          className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
-          ref={meetingSDKElement}
-        ></div>
-      </Box>
-      <CustomToolbar />
-    </Flex>
+    <>
+      <Flex>
+        <Box id="container" flex="6" bgColor="black">
+          <div
+            id="zoom-app"
+            className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
+            ref={meetingSDKElement}
+          ></div>
+        </Box>
+        <CustomToolbar />
+      </Flex>
+
+      <Modal
+        title="Notification"
+        description="Please wait! We are initializing your meeting. This will take a minute."
+        isOpen={loading}
+        onClose={onClose}
+        hideCancelBtn
+        hideCloseIcon
+      />
+    </>
   );
 }
 
