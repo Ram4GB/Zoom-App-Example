@@ -34,3 +34,7 @@ npm i
 ```
 npm run dev:goat
 ```
+
+## Generate token
+
+We can generate token from client side but it is not safe for us to disclose the app key, so we will create the Nodejs server that returns a token. Here is [the example](./API.md)
