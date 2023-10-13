@@ -11,6 +11,7 @@ import Modal from "../Modal.tsx";
 import { useDisclosure } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { generateSignature } from "../../utils/generate-signature.ts";
+import { faker } from "@faker-js/faker";
 
 interface Form {
   meetingNumber: string;
@@ -18,8 +19,9 @@ interface Form {
 }
 
 interface Props {
+  userName?: string;
+  widthPercent: number;
   onEnded?: () => void;
-  userName: string;
 }
 
 const meetingNumber = "8561292498";
@@ -38,6 +40,7 @@ function Zoom(props: Props) {
   const [isMod] = useState(true);
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
   const [loading, setLoading] = useState(true);
+  const fitWidth = (window.document.documentElement.clientWidth * props.widthPercent) / 100;
 
   useZoomDebug(zoomClient);
   useOnlyShowGalleryView(zoomClient, {
@@ -47,10 +50,11 @@ function Zoom(props: Props) {
   useResizeZoom(zoomClient, {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
+    fitWidth,
   });
 
   const loadZoom = useCallback(async () => {
-    if (!props.userName) return navigate("/");
+    if (!props.userName && import.meta.env.MODE !== "goat") return navigate("/");
 
     const client = ZoomMtgEmbedded.createClient();
 
@@ -69,7 +73,7 @@ function Zoom(props: Props) {
         video: {
           viewSizes: {
             default: {
-              width: Math.min(1300, window.document.documentElement.clientWidth),
+              width: fitWidth,
               height: 700,
             },
             ribbon: {
@@ -119,21 +123,35 @@ function Zoom(props: Props) {
         .signature;
     }
 
-    console.log("signature", signature);
-
     await client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
       signature,
       meetingNumber: value.meetingNumber,
       password: value.password,
-      userName: props.userName,
+      userName: import.meta.env.MODE === "goat" ? faker.person.fullName() : props.userName!,
     });
+
+    (
+      document.querySelector('#zoom-app [id^="suspension-view-tabpanel"]:not([hidden])') as HTMLElement
+    )?.style.setProperty("--width-screen", `${props.widthPercent}vw`);
+
+    (
+      document.querySelector(
+        "#zoom-app .react-draggable > .zmwebsdk-MuiPaper-rounded > .zmwebsdk-MuiPaper-rounded ",
+      ) as HTMLElement
+    )?.style.setProperty("--width-screen", `${props.widthPercent}vw`);
+
+    (
+      document.querySelector(
+        "#zoom-app .react-draggable > .zmwebsdk-MuiPaper-rounded > .zmwebsdk-MuiPaper-rounded:nth-child(2)",
+      ) as HTMLElement
+    )?.style.setProperty("--width-screen", `${props.widthPercent}vw`);
 
     setZoomClient(client);
     setLoading(false);
 
     return () => {};
-  }, [isMod, value.meetingNumber, value.password, props.userName, navigate, onEnded]);
+  }, [isMod, value.meetingNumber, value.password, props.userName, props.widthPercent, fitWidth, navigate, onEnded]);
 
   useEffect(() => {
     loadZoom();
@@ -145,7 +163,7 @@ function Zoom(props: Props) {
         <Box id="container" flex="6" bgColor="black">
           <div
             id="zoom-app"
-            className="zoom-app min-h-screen min-w-full h-screen w-screen flex justify-center items-center"
+            className="zoom-app min-h-screen min-w-full h-screen w-screen flex items-center"
             ref={meetingSDKElement}
           ></div>
         </Box>

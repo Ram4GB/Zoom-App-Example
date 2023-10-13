@@ -8,7 +8,7 @@
   --width-screen: 100vw;
 
   height: calc(100vh - 34px - 42px);
-  width: calc(var(--width-screen) - 4px);
+  width: var(--width-screen);
 }
 
 #zoom-app [id^="suspension-view-tabpanel"] > div:nth-child(1) {
@@ -16,7 +16,9 @@
 }
 
 #zoom-app .react-draggable > .zmwebsdk-MuiPaper-rounded > .zmwebsdk-MuiPaper-rounded {
-  @apply w-screen;
+  --width-screen: 100vw;
+
+  width: var(--width-screen);
 }
 
 [role="dialog"][x-placement="right-start"]:not([class*="chakra"]) {

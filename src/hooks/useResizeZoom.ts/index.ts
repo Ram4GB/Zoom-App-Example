@@ -9,6 +9,7 @@ export default function useResizeZoom(
   options: {
     container?: HTMLElement;
     zoomAppId: string;
+    fitWidth: number;
   },
 ) {
   const updateZoomSize = useMemo(
@@ -34,7 +35,7 @@ export default function useResizeZoom(
     const resizeObserver = new ResizeObserver(function () {
       if (!zoomAppEl) return;
 
-      updateZoomSize(Math.min(1300, window.document.documentElement.clientWidth));
+      updateZoomSize(options.fitWidth);
     });
 
     resizeObserver.observe(zoomAppEl);
@@ -42,5 +43,5 @@ export default function useResizeZoom(
     return () => {
       resizeObserver.disconnect();
     };
-  }, [client, options.container, options.zoomAppId, updateZoomSize]);
+  }, [client, options.container, options.zoomAppId, options.fitWidth, updateZoomSize]);
 }
