@@ -29,6 +29,8 @@ import image3 from "@/assets/user_edu_scheduling_light_b352efa017e4f8f1ffda43e84
 import image4 from "@/assets/user_edu_safety_light_e04a2bbb449524ef7e49ea36d5f25b65.svg";
 
 import JoinMeetingConfirmation from "../sections/LandingPage/JoinMeetingConfirmation";
+import { faker } from "@faker-js/faker";
+import { useNavigate } from "react-router-dom";
 
 interface Image {
   title: string;
@@ -64,6 +66,8 @@ export default function LandingPage() {
   ];
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [loading, setLoading] = useState(false);
+  const [userName, setUsername] = useState(faker.person.fullName({ firstName: "Lee" }));
+  const navigate = useNavigate();
 
   const next = () => {
     setIndex((prev) => Math.min(images.length - 1, prev + 1));
@@ -86,7 +90,7 @@ export default function LandingPage() {
 
     setTimeout(() => {
       onClose();
-      window.location.href = "/meeting";
+      navigate("/meeting", { state: { userName } });
     }, 1000);
   };
 
@@ -132,7 +136,12 @@ export default function LandingPage() {
                 <InputLeftElement h="full" pointerEvents="none">
                   <FaRegKeyboard />
                 </InputLeftElement>
-                <Input defaultValue="8561292498" size="lg" placeholder="Enter a code or link" />
+                <Input
+                  value={userName}
+                  onChange={(e) => setUsername(e.target.value)}
+                  size="lg"
+                  placeholder="Enter a code or link"
+                />
               </InputGroup>
 
               <Button onClick={confirmJoinMeeting} size="lg">

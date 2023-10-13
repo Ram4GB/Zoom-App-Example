@@ -3,8 +3,10 @@ import Zoom from "../components/Zoom/Zoom";
 import { useDisclosure } from "@chakra-ui/hooks";
 import Confirmation from "../components/Confirmation";
 import { useEffect, useInsertionEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Meeting() {
+  const location = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
   const meetingClass = "meeting";
@@ -36,7 +38,7 @@ export default function Meeting() {
         pb={0}
         px={0}
       >
-        <Zoom onEnded={onOpen} />
+        <Zoom userName={location.state.userName} onEnded={onOpen} />
 
         <Confirmation
           loading={loading}

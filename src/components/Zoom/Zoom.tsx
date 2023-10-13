@@ -2,55 +2,56 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
 import useOnlyShowGalleryView from "../../hooks/useOnlyShowGalleryView/index.ts";
 import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
-import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
 import "./index.scss";
-import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
 import CustomToolbar from "./CustomToolbar.tsx";
 import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
 import axios from "axios";
 import Modal from "../Modal.tsx";
 import { useDisclosure } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import { generateSignature } from "../../utils/generate-signature.ts";
 
 interface Form {
-  userName: string;
   meetingNumber: string;
   password: string;
 }
 
 interface Props {
   onEnded?: () => void;
+  userName: string;
 }
 
 const meetingNumber = "8561292498";
 const password = "Hh9z3T";
 
 function Zoom(props: Props) {
+  const { onClose } = useDisclosure();
+  const navigate = useNavigate();
   const { onEnded } = props;
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<typeof EmbeddedClient>();
   const [value] = useState<Form>({
-    userName: faker.person.fullName(),
     meetingNumber,
     password,
   });
   const [isMod] = useState(true);
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
   const [loading, setLoading] = useState(true);
-  const { onClose } = useDisclosure();
 
   useZoomDebug(zoomClient);
   useOnlyShowGalleryView(zoomClient, {
     enabled: !isMod,
     container: document.getElementById("container") as HTMLElement,
   });
-  const { autoTurnAudioPermissionHandler, disconnect } = useAutoTurnAudioPermission();
   useResizeZoom(zoomClient, {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
 
   const loadZoom = useCallback(async () => {
+    if (!props.userName) return navigate("/");
+
     const client = ZoomMtgEmbedded.createClient();
 
     clientRef.current = client;
@@ -99,36 +100,44 @@ function Zoom(props: Props) {
         clientRef.current = undefined;
         window.zoomClient = null;
         setZoomClient(null);
+        setLoading(false);
         onEnded?.();
       }
     });
 
-    const payload = await axios.get<{ token: string }>("https://upbeat-insidious-archeology.glitch.me/token");
+    let signature = "";
+
+    if (import.meta.env.MODE === "goat") {
+      signature = generateSignature(
+        import.meta.env.VITE_ZOOM_SDK_KEY,
+        import.meta.env.VITE_ZOOM_CLIENT_SECRET,
+        meetingNumber,
+        1,
+      );
+    } else {
+      signature = (await axios.get<{ signature: string }>("https://upbeat-insidious-archeology.glitch.me/token")).data
+        .signature;
+    }
+
+    console.log("signature", signature);
 
     await client.join({
       sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
-      signature: payload.data.token,
+      signature,
       meetingNumber: value.meetingNumber,
       password: value.password,
-      userName: value.userName,
+      userName: props.userName,
     });
-
-    // https://devforum.zoom.us/t/microphone-turn-on-problem/88569
-    autoTurnAudioPermissionHandler(client);
 
     setZoomClient(client);
     setLoading(false);
 
     return () => {};
-  }, [isMod, value.meetingNumber, value.password, value.userName, onEnded, autoTurnAudioPermissionHandler]);
+  }, [isMod, value.meetingNumber, value.password, props.userName, navigate, onEnded]);
 
   useEffect(() => {
     loadZoom();
-
-    return () => {
-      disconnect();
-    };
-  }, [loadZoom, disconnect]);
+  }, [loadZoom]);
 
   return (
     <>

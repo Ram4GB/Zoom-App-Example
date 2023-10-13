@@ -5,7 +5,7 @@ import { PiDotsNineBold } from "react-icons/pi";
 import logo from "@/assets/google_meet_horizontal_wordmark_2020q4_2x_icon_124_40_292e71bcb52a56e2a9005164118f183b.png";
 import myLogo from "@/assets/IMG_0158_2_Large.jpeg";
 import SettingModal from "../sections/LandingPage/SettingModal.tsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 interface Layout {
@@ -15,8 +15,15 @@ interface Layout {
 export default function Layout(props: Layout) {
   const [isOpenSettingModal, setIsOpenSettingModal] = useState(false);
   const { pathname } = useLocation();
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const isFullScreen = props.fullscreen?.includes(pathname);
+
+  useEffect(() => {
+    setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+  }, []);
 
   return (
     <>
@@ -27,7 +34,7 @@ export default function Layout(props: Layout) {
             <Box ml="auto" display="flex">
               <Stack direction="row" display="flex" alignItems="center">
                 <Box className="hidden lg:block" as="p" color="zlight-grey" fontSize="1.1rem" cursor="default">
-                  {dayjs().format("h:m a • ddd, MMM D")}
+                  {dayjs(currentTime).format("hh:mm a • ddd, MMM D")}
                 </Box>
                 <Tooltip label="Support">
                   <IconButton

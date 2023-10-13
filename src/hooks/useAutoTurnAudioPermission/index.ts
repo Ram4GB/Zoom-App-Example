@@ -3,6 +3,7 @@ import waitForElement from "../../utils/wait-for-element";
 import { useCallback, useRef } from "react";
 import useToast from "../useToast";
 
+// https://devforum.zoom.us/t/microphone-turn-on-problem/88569
 const useAutoTurnAudioPermission = () => {
   const mutationObserver = useRef<MutationObserver>();
   const toast = useToast();
