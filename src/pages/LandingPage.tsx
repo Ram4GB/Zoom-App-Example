@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Box,
   Button,
@@ -42,36 +42,45 @@ type Images = Image[];
 
 export default function LandingPage() {
   const [index, setIndex] = useState(0);
-  const images: Images = [
-    {
-      title: "Unlock premium Meet features",
-      content: "Enjoy longer group video calls, noise cancellation, and more with a Google One Premium plan. ",
-      imgSrc: image1,
-    },
-    {
-      title: "Get a link you can share",
-      content: "Click New meeting to get a link you can send to people you want to meet with",
-      imgSrc: image2,
-    },
-    {
-      title: "Get a link you can share",
-      content: "Click New meeting to schedule meetings in Google Calendar and send invites to participants",
-      imgSrc: image3,
-    },
-    {
-      title: "Your meeting is safe",
-      content: "No one can join a meeting unless invited or admitted by the host",
-      imgSrc: image4,
-    },
-  ];
+  const images: Images = useMemo(
+    () => [
+      {
+        title: "Unlock premium Meet features",
+        content: "Enjoy longer group video calls, noise cancellation, and more with a Google One Premium plan. ",
+        imgSrc: image1,
+      },
+      {
+        title: "Get a link you can share",
+        content: "Click New meeting to get a link you can send to people you want to meet with",
+        imgSrc: image2,
+      },
+      {
+        title: "Get a link you can share",
+        content: "Click New meeting to schedule meetings in Google Calendar and send invites to participants",
+        imgSrc: image3,
+      },
+      {
+        title: "Your meeting is safe",
+        content: "No one can join a meeting unless invited or admitted by the host",
+        imgSrc: image4,
+      },
+    ],
+    [],
+  );
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [loading, setLoading] = useState(false);
   const [userName, setUsername] = useState(faker.person.fullName({ firstName: "Lee" }));
   const navigate = useNavigate();
 
-  const next = () => {
-    setIndex((prev) => Math.min(images.length - 1, prev + 1));
-  };
+  const next = useCallback(() => {
+    setIndex((prev) => {
+      if (prev + 1 === images.length) {
+        return 0;
+      } else {
+        return prev + 1;
+      }
+    });
+  }, [setIndex, images.length]);
 
   const prev = () => {
     setIndex((prev) => Math.max(0, prev - 1));
@@ -93,6 +102,14 @@ export default function LandingPage() {
       navigate("/meeting", { state: { userName } });
     }, 1000);
   };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      next();
+    }, 2000);
+
+    return () => clearInterval(timer);
+  }, [next]);
 
   return (
     <>
