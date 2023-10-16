@@ -3,7 +3,7 @@ const delay = (time: number) => {
     let i = 0;
 
     const t = setInterval(() => {
-      console.log(i, " s");
+      console.info(i, " s");
       i++;
     }, 1000);
 

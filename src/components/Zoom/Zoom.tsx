@@ -11,6 +11,8 @@ import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
 import axios from "axios";
 import Modal from "../Modal.tsx";
 import { useDisclosure } from "@chakra-ui/react";
+import waitForElement from "../../utils/wait-for-element.ts";
+import debounce from "../../utils/debounce.ts";
 
 interface Form {
   userName: string;
@@ -51,73 +53,94 @@ function Zoom(props: Props) {
   });
 
   const loadZoom = useCallback(async () => {
-    const client = ZoomMtgEmbedded.createClient();
+    try {
+      const client = ZoomMtgEmbedded.createClient();
 
-    clientRef.current = client;
+      clientRef.current = client;
 
-    // expose zoom client to window
-    window.zoomClient = client;
+      // expose zoom client to window
+      window.zoomClient = client;
 
-    await client.init({
-      debug: true,
-      maximumVideosInGalleryView: 5,
-      zoomAppRoot: meetingSDKElement.current as unknown as HTMLElement,
-      language: "en-US",
-      customize: {
-        meetingInfo: ["topic", "host", "mn", "pwd", "participant", "dc", "enctype"],
-        video: {
-          viewSizes: {
-            default: {
-              width: Math.min(1300, window.document.documentElement.clientWidth),
-              height: 700,
+      await client.init({
+        debug: true,
+        maximumVideosInGalleryView: 5,
+        zoomAppRoot: meetingSDKElement.current as unknown as HTMLElement,
+        language: "en-US",
+        customize: {
+          meetingInfo: ["topic", "host", "mn", "pwd", "participant", "dc", "enctype"],
+          video: {
+            viewSizes: {
+              default: {
+                width: Math.min(1300, window.document.documentElement.clientWidth),
+                height: 700,
+              },
+              ribbon: {
+                width: 300,
+                height: 700,
+              },
             },
-            ribbon: {
-              width: 300,
-              height: 700,
+            isResizable: true,
+            defaultViewType: "gallery" as SuspensionViewType,
+          },
+          toolbar: {
+            buttons: [],
+          },
+          activeApps: {
+            popper: {
+              placement: "top-start",
             },
           },
-          isResizable: true,
-          defaultViewType: "gallery" as SuspensionViewType,
         },
-        toolbar: {
-          buttons: [],
-        },
-        activeApps: {
-          popper: {
-            placement: "top-start",
-          },
-        },
-      },
-    });
+      });
 
-    client.on("connection-change", (payload) => {
-      if (payload.state === "Connected") {
-        if (!isMod) document.body.classList.add("only-gallery-view");
-      } else {
-        document.body.classList.remove("only-gallery-view");
-        ZoomMtgEmbedded.destroyClient();
-        clientRef.current = undefined;
-        window.zoomClient = null;
-        setZoomClient(null);
-        onEnded?.();
-      }
-    });
+      client.on("connection-change", (payload) => {
+        if (payload.state === "Connected") {
+          if (!isMod) document.body.classList.add("only-gallery-view");
+        } else {
+          document.body.classList.remove("only-gallery-view");
+          ZoomMtgEmbedded.destroyClient();
+          clientRef.current = undefined;
+          window.zoomClient = null;
+          setZoomClient(null);
+          onEnded?.();
+        }
+      });
 
-    const payload = await axios.get<{ token: string }>("https://upbeat-insidious-archeology.glitch.me/token");
+      const payload = await axios.get<{ token: string }>("https://upbeat-insidious-archeology.glitch.me/token");
 
-    await client.join({
-      sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
-      signature: payload.data.token,
-      meetingNumber: value.meetingNumber,
-      password: value.password,
-      userName: value.userName,
-    });
+      await client.join({
+        sdkKey: import.meta.env.VITE_ZOOM_SDK_KEY,
+        signature: payload.data.token,
+        meetingNumber: value.meetingNumber,
+        password: value.password,
+        userName: value.userName,
+      });
 
-    // https://devforum.zoom.us/t/microphone-turn-on-problem/88569
-    autoTurnAudioPermissionHandler(client);
+      // https://devforum.zoom.us/t/microphone-turn-on-problem/88569
+      autoTurnAudioPermissionHandler(client);
 
-    setZoomClient(client);
-    setLoading(false);
+      const clickVideoBtnDebounce = debounce(async () => {
+        const videoBtn = await waitForElement('[title="Start Video"]');
+
+        if (!videoBtn) return;
+
+        (videoBtn as HTMLButtonElement).click();
+        videoObserver.disconnect();
+      }, 100);
+
+      const videoObserver = new MutationObserver(clickVideoBtnDebounce);
+
+      videoObserver.observe(meetingSDKElement.current!, {
+        attributes: true,
+        subtree: true,
+        childList: true,
+      });
+
+      setZoomClient(client);
+      setLoading(false);
+    } catch (error) {
+      console.log("error", error);
+    }
 
     return () => {};
   }, [isMod, value.meetingNumber, value.password, value.userName, onEnded, autoTurnAudioPermissionHandler]);

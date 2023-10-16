@@ -31,8 +31,6 @@ const useAutoTurnAudioPermission = () => {
         }
       });
 
-      console.log('document.body.querySelector("#zoom-app")', document.body.querySelector("#zoom-app"));
-
       try {
         await navigator.mediaDevices.getUserMedia({ audio: true });
         mutationObserver.current.observe(document.body, {
