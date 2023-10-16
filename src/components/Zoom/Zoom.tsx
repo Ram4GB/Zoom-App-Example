@@ -11,8 +11,7 @@ import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
 import axios from "axios";
 import Modal from "../Modal.tsx";
 import { useDisclosure } from "@chakra-ui/react";
-import waitForElement from "../../utils/wait-for-element.ts";
-import debounce from "../../utils/debounce.ts";
+import useAutoTurnVideoOn from "../../hooks/useAutoTurnVideoOn.ts";
 
 interface Form {
   userName: string;
@@ -51,6 +50,7 @@ function Zoom(props: Props) {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
+  const { handler: autoTurnVideoOnHandler } = useAutoTurnVideoOn();
 
   const loadZoom = useCallback(async () => {
     try {
@@ -118,23 +118,7 @@ function Zoom(props: Props) {
 
       // https://devforum.zoom.us/t/microphone-turn-on-problem/88569
       autoTurnAudioPermissionHandler(client);
-
-      const clickVideoBtnDebounce = debounce(async () => {
-        const videoBtn = await waitForElement('[title="Start Video"]');
-
-        if (!videoBtn) return;
-
-        (videoBtn as HTMLButtonElement).click();
-        videoObserver.disconnect();
-      }, 100);
-
-      const videoObserver = new MutationObserver(clickVideoBtnDebounce);
-
-      videoObserver.observe(meetingSDKElement.current!, {
-        attributes: true,
-        subtree: true,
-        childList: true,
-      });
+      autoTurnVideoOnHandler(meetingSDKElement.current!);
 
       setZoomClient(client);
       setLoading(false);
@@ -143,10 +127,19 @@ function Zoom(props: Props) {
     }
 
     return () => {};
-  }, [isMod, value.meetingNumber, value.password, value.userName, onEnded, autoTurnAudioPermissionHandler]);
+  }, [
+    isMod,
+    value.meetingNumber,
+    value.password,
+    value.userName,
+    onEnded,
+    autoTurnAudioPermissionHandler,
+    autoTurnVideoOnHandler,
+  ]);
 
   useEffect(() => {
     loadZoom();
+    console.log("first");
 
     return () => {
       disconnect();
