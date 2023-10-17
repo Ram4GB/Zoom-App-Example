@@ -1,8 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import debounce from "../utils/debounce";
 import waitForElement from "../utils/wait-for-element";
 
 const useAutoTurnVideoOn = () => {
+  const videoObserver = useRef<MutationObserver>();
+
   const handler = useCallback((meetingSDKElement: HTMLElement) => {
     const clickVideoBtnDebounce = debounce(async () => {
       const videoBtn = await waitForElement('[title="Start Video"]');
@@ -10,20 +12,25 @@ const useAutoTurnVideoOn = () => {
       if (!videoBtn) return;
 
       (videoBtn as HTMLButtonElement).click();
-      videoObserver.disconnect();
+      if (videoObserver.current) videoObserver.current.disconnect();
     }, 100);
 
-    const videoObserver = new MutationObserver(clickVideoBtnDebounce);
+    videoObserver.current = new MutationObserver(clickVideoBtnDebounce);
 
-    videoObserver.observe(meetingSDKElement, {
+    videoObserver.current.observe(meetingSDKElement, {
       attributes: true,
       subtree: true,
       childList: true,
     });
   }, []);
 
+  const disconnect = () => {
+    videoObserver.current?.disconnect();
+  };
+
   return {
     handler,
+    disconnect,
   };
 };
 

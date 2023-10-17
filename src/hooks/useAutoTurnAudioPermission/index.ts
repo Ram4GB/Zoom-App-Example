@@ -7,8 +7,8 @@ const useAutoTurnAudioPermission = () => {
   const mutationObserver = useRef<MutationObserver>();
   const toast = useToast();
 
-  const autoTurnAudioPermissionHandler = useCallback(
-    async (client: typeof EmbeddedClient | null) => {
+  const handler = useCallback(
+    async (client: typeof EmbeddedClient | null, mute: boolean) => {
       mutationObserver.current = new MutationObserver(async () => {
         const audioBtn = await waitForElement("[title=Audio]");
 
@@ -22,8 +22,34 @@ const useAutoTurnAudioPermission = () => {
 
         const title = (muteOrUnmute as HTMLButtonElement).getAttribute("title");
 
-        if (title === "Mute") {
+        console.log("mute", mute, title);
+
+        if (mute) {
+          if (title === "Unmute") {
+            if (mutationObserver.current) {
+              return mutationObserver.current.disconnect();
+            }
+          }
+
           client.mute(true, client.getCurrentUser()?.userId).then(() => {
+            if (mutationObserver.current) {
+              mutationObserver.current.disconnect();
+            }
+          });
+
+          return;
+        }
+
+        // mute = false -> unmute
+
+        if (title === "Mute") {
+          if (mutationObserver.current) {
+            return mutationObserver.current.disconnect();
+          }
+        }
+
+        if (title === "UnMute") {
+          client.mute(false, client.getCurrentUser()?.userId).then(() => {
             if (mutationObserver.current) {
               mutationObserver.current.disconnect();
             }
@@ -56,7 +82,7 @@ const useAutoTurnAudioPermission = () => {
   }, []);
 
   return {
-    autoTurnAudioPermissionHandler,
+    handler,
     disconnect,
   };
 };
