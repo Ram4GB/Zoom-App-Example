@@ -45,8 +45,8 @@ const PreviewPage = () => {
     }
   };
 
-  const grantMediaPermission = () => {
-    const customNavigator = navigator as unknown as Navigator;
+  const grantMediaPermission = async () => {
+    const customNavigator = navigator;
 
     if (window.localMediaStream) {
       window.localMediaStream.getTracks().forEach((track) => {
@@ -54,34 +54,31 @@ const PreviewPage = () => {
       });
     }
 
-    customNavigator.getUserMedia(
-      {
+    try {
+      const localMediaStream = await customNavigator.mediaDevices.getUserMedia({
         video: {
-          mandatory: {
-            minWidth: 1280,
-            minHeight: 720,
-          },
+          height: 100,
         },
-        audio: true,
-      },
-      (localMediaStream) => {
-        console.log("localMediaStream", localMediaStream);
-        const videoEl = document.querySelector("video");
+        audio: {
+          deviceId: undefined,
+        },
+      });
 
-        if (!videoEl) return;
+      console.log("localMediaStream", localMediaStream);
+      const videoEl = document.querySelector("video");
 
-        videoEl.srcObject = localMediaStream;
+      if (!videoEl) return;
 
-        videoEl.onloadedmetadata = function (e) {
-          console.log("e", e);
-        };
+      videoEl.srcObject = localMediaStream;
 
-        window.localMediaStream = localMediaStream;
-      },
-      (error) => {
-        console.log("error", error);
-      },
-    );
+      videoEl.onloadedmetadata = function (e) {
+        console.log("e", e);
+      };
+
+      window.localMediaStream = localMediaStream;
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   // const requestMediaPermission = () => {
@@ -175,6 +172,14 @@ const PreviewPage = () => {
     }
   };
 
+  const toggleAudio = () => {
+    if (mute) {
+      setMute(false);
+    } else {
+      setMute(true);
+    }
+  };
+
   useEffect(() => {
     localStorage.setItem("mute", String(mute));
     localStorage.setItem("video", String(video));
@@ -191,6 +196,7 @@ const PreviewPage = () => {
             height={100}
             style={{ transform: "rotateY(180deg)" }}
             muted={mute}
+            // controls
             className="bg-[#242424] w-full"
           />
         </Box>
@@ -199,7 +205,7 @@ const PreviewPage = () => {
             <Button
               leftIcon={mute ? <BiMicrophoneOff /> : <BiMicrophone />}
               flexGrow={0}
-              onClick={() => setMute((prev) => !prev)}
+              onClick={toggleAudio}
               colorScheme="teal"
               size="lg"
             >
