@@ -197,16 +197,16 @@ const PreviewPage = () => {
         <Box flex={1} p={4}>
           <Stack>
             <Button
-              leftIcon={mute ? <BiMicrophone /> : <BiMicrophoneOff />}
+              leftIcon={mute ? <BiMicrophoneOff /> : <BiMicrophone />}
               flexGrow={0}
               onClick={() => setMute((prev) => !prev)}
               colorScheme="teal"
               size="lg"
             >
-              {mute ? "Unmute" : "Mute"} Audio
+              {/* {mute ? "Enable" : "Disable"} Audio */}
             </Button>
-            <Button leftIcon={video ? <FiVideoOff /> : <FiVideo />} onClick={toggleVideo} colorScheme="teal" size="lg">
-              {video ? "Hide" : "Show"} Video
+            <Button leftIcon={!video ? <FiVideoOff /> : <FiVideo />} onClick={toggleVideo} colorScheme="teal" size="lg">
+              {/* {video ? "Hide" : "Show"} Video */}
             </Button>
             <Button colorScheme="teal" variant="outline" onClick={() => navigate("/meeting")} size="lg">
               Navigate to meeting
