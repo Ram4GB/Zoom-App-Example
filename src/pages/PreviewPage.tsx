@@ -1,8 +1,9 @@
-import { Box, Button, Flex, Stack } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Stack } from "@chakra-ui/react";
 import { LegacyRef, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiVideo, FiVideoOff } from "react-icons/fi";
 import { BiMicrophone, BiMicrophoneOff } from "react-icons/bi";
+import { SiGoogleclassroom } from "react-icons/si";
 
 // https://web.dev/articles/getusermedia-intro#round_3_webrtc
 
@@ -57,7 +58,10 @@ const PreviewPage = () => {
     try {
       const localMediaStream = await customNavigator.mediaDevices.getUserMedia({
         video: {
-          height: 100,
+          deviceId: undefined,
+          height: 1080,
+          width: 1920,
+          facingMode: "environment",
         },
         audio: {
           deviceId: undefined,
@@ -71,8 +75,8 @@ const PreviewPage = () => {
 
       videoEl.srcObject = localMediaStream;
 
-      videoEl.onloadedmetadata = function (e) {
-        console.log("e", e);
+      videoEl.onloadedmetadata = function () {
+        console.log("video loaded");
       };
 
       window.localMediaStream = localMediaStream;
@@ -88,33 +92,15 @@ const PreviewPage = () => {
   //   });
   // };
 
-  // const getDevices = () => {
-  //   console.log("getDevices");
-  //   return navigator.mediaDevices
-  //     .enumerateDevices()
-  //     .then((deviceInfos) => {
-  //       console.log("!deviceInfos.length || !audioSelectEl.current || !videoSelectEl.current", !audioSelectEl.current);
-  //       if (!deviceInfos.length || !audioSelectEl.current || !videoSelectEl.current) return;
-
-  //       audioSelectEl.current.innerHTML = "";
-  //       videoSelectEl.current.innerHTML = "";
-
-  //       deviceInfos.forEach((deviceInfo) => {
-  //         const el = document.createElement("option");
-  //         el.value = deviceInfo.deviceId;
-  //         el.label = deviceInfo.label;
-
-  //         if (deviceInfo.kind === "audioinput") {
-  //           audioSelectEl.current!.appendChild(el);
-  //         } else if (deviceInfo.kind === "videoinput") {
-  //           videoSelectEl.current!.appendChild(el);
-  //         } else {
-  //           console.log("Unvalidated option", deviceInfo.kind);
-  //         }
-  //       });
-  //     })
-  //     .catch(handleError);
-  // };
+  const getDevices = () => {
+    console.log("getDevices");
+    return navigator.mediaDevices
+      .enumerateDevices()
+      .then((deviceInfos) => {
+        console.log("deviceInfos", deviceInfos);
+      })
+      .catch(handleError);
+  };
 
   useEffect(() => {
     handleCheckUserMedia();
@@ -156,11 +142,11 @@ const PreviewPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const handleError = (e: unknown) => {
-  //   if (e instanceof Error) {
-  //     return console.log(e.message);
-  //   }
-  // };
+  const handleError = (e: unknown) => {
+    if (e instanceof Error) {
+      return console.log(e.message);
+    }
+  };
 
   const toggleVideo = () => {
     if (video) {
@@ -183,42 +169,59 @@ const PreviewPage = () => {
   useEffect(() => {
     localStorage.setItem("mute", String(mute));
     localStorage.setItem("video", String(video));
+    getDevices();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mute, video]);
 
   return (
     <Flex className="h-screen" alignItems="center">
-      <Flex alignItems="center" className="w-screen">
-        <Box flex={1} p={4}>
+      <Flex direction={{ base: "column", lg: "row" }} alignItems="center" className="w-screen">
+        <Box flex={1} m={4} pos="relative">
           <video
             ref={videoEl as unknown as LegacyRef<HTMLVideoElement>}
             autoPlay
-            width={100}
-            height={100}
             style={{ transform: "rotateY(180deg)" }}
             muted={mute}
-            // controls
-            className="bg-[#242424] w-full"
-          />
+            className="bg-[#242424] w-full h-[300px] lg:h-[600px]"
+            playsInline
+          ></video>
+          <Box pos="absolute" bottom={1} left={0} zIndex={10000} w="full">
+            <Stack w="full" direction="row" justifyContent="center">
+              <IconButton
+                aria-label=""
+                icon={mute ? <BiMicrophoneOff /> : <BiMicrophone />}
+                onClick={toggleAudio}
+                size="lg"
+                variant="solid"
+                // colorScheme="whatsapp"
+              ></IconButton>{" "}
+              <IconButton
+                aria-label=""
+                icon={!video ? <FiVideoOff /> : <FiVideo />}
+                onClick={toggleVideo}
+                size="lg"
+                variant="solid"
+                // colorScheme="whatsapp"
+              ></IconButton>
+              <IconButton
+                onClick={() => navigate("/meeting")}
+                aria-label=""
+                icon={<SiGoogleclassroom />}
+                size="lg"
+                variant="solid"
+                // colorScheme="whatsapp"
+              ></IconButton>
+            </Stack>
+          </Box>
         </Box>
-        <Box flex={1} p={4}>
-          <Stack>
-            <Button
-              leftIcon={mute ? <BiMicrophoneOff /> : <BiMicrophone />}
-              flexGrow={0}
-              onClick={toggleAudio}
-              colorScheme="teal"
-              size="lg"
-            >
-              {/* {mute ? "Enable" : "Disable"} Audio */}
-            </Button>
-            <Button leftIcon={!video ? <FiVideoOff /> : <FiVideo />} onClick={toggleVideo} colorScheme="teal" size="lg">
-              {/* {video ? "Hide" : "Show"} Video */}
-            </Button>
-            <Button colorScheme="teal" variant="outline" onClick={() => navigate("/meeting")} size="lg">
+        {/* <Box flex={1} p={4}>
+          <Stack alignItems="center">
+            <Button colorScheme="teal" variant="solid"  size="lg">
               Navigate to meeting
             </Button>
           </Stack>
-        </Box>
+        </Box> */}
       </Flex>
     </Flex>
   );
