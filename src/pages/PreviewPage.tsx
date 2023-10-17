@@ -181,9 +181,9 @@ const PreviewPage = () => {
   }, [mute, video]);
 
   return (
-    <Flex className="h-screen w-screen" alignItems="center">
+    <Flex className="h-screen" alignItems="center">
       <Flex alignItems="center" className="w-screen">
-        <Box flex={2} p={4}>
+        <Box flex={1} p={4}>
           <video
             ref={videoEl as unknown as LegacyRef<HTMLVideoElement>}
             autoPlay
