@@ -2,6 +2,7 @@ import { EmbeddedClient } from "@zoomus/websdk/embedded";
 import waitForElement from "../../utils/wait-for-element";
 import { useCallback, useRef } from "react";
 import useToast from "../useToast";
+import debounce from "../../utils/debounce";
 
 const useAutoTurnAudioPermission = () => {
   const mutationObserver = useRef<MutationObserver>();
@@ -9,7 +10,7 @@ const useAutoTurnAudioPermission = () => {
 
   const handler = useCallback(
     async (client: typeof EmbeddedClient | null, mute: boolean) => {
-      mutationObserver.current = new MutationObserver(async () => {
+      const debounceFunc = debounce(async () => {
         const audioBtn = await waitForElement("[title=Audio]");
 
         if (!audioBtn || !client) return;
@@ -55,7 +56,9 @@ const useAutoTurnAudioPermission = () => {
             }
           });
         }
-      });
+      }, 200);
+
+      mutationObserver.current = new MutationObserver(debounceFunc);
 
       try {
         await navigator.mediaDevices.getUserMedia({ audio: true });
