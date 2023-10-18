@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Container, Box, Flex, IconButton, Stack, Tooltip, Avatar } from "@chakra-ui/react";
 import { SettingsIcon, QuestionOutlineIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { PiDotsNineBold } from "react-icons/pi";
@@ -15,6 +15,7 @@ interface Layout {
 export default function Layout(props: Layout) {
   const [isOpenSettingModal, setIsOpenSettingModal] = useState(false);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const isFullScreen = props.fullscreen?.includes(pathname);
 
@@ -23,7 +24,7 @@ export default function Layout(props: Layout) {
       <Container maxW={isFullScreen ? "none" : "container.xl"} p={isFullScreen ? 0 : 2}>
         <Box p={isFullScreen ? 0 : 2} as="header" h="64px" display={isFullScreen ? "none" : ""}>
           <Flex alignItems="center">
-            <img className="w-32 h-10" src={logo} alt="" />
+            <img onClick={() => navigate("/")} className="w-32 h-10" src={logo} alt="" />
             <Box ml="auto" display="flex">
               <Stack direction="row" display="flex" alignItems="center">
                 <Box className="hidden lg:block" as="p" color="zlight-grey" fontSize="1.1rem" cursor="default">

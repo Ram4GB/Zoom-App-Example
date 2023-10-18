@@ -5,10 +5,20 @@ const CustomToolbar = () => {
   return (
     <Portal>
       <Box as="div" position="fixed" bgColor="red" right={4} bottom={4}>
-        {/* <Box as="div">hello world</Box>
-        <Box as="div">hello world</Box>
-        <Box as="div">hello world</Box>
-        <Box as="div">hello world</Box> */}
+        <Box
+          as="button"
+          onClick={() => {
+            console.log(
+              "window.zoomClient?.updateVirtualBackgroundList",
+              window.zoomClient?.updateVirtualBackgroundList,
+            );
+            window.zoomClient?.updateVirtualBackgroundList([]);
+          }}
+          color="white"
+          padding={5}
+        >
+          Update virtual background
+        </Box>
       </Box>
     </Portal>
   );

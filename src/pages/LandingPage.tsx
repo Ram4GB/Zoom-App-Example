@@ -29,6 +29,7 @@ import image3 from "@/assets/user_edu_scheduling_light_b352efa017e4f8f1ffda43e84
 import image4 from "@/assets/user_edu_safety_light_e04a2bbb449524ef7e49ea36d5f25b65.svg";
 
 import JoinMeetingConfirmation from "../sections/LandingPage/JoinMeetingConfirmation";
+import { useNavigate } from "react-router-dom";
 
 interface Image {
   title: string;
@@ -64,6 +65,7 @@ export default function LandingPage() {
   ];
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const next = () => {
     setIndex((prev) => Math.min(images.length - 1, prev + 1));
@@ -83,11 +85,7 @@ export default function LandingPage() {
 
   const navigateToMeeting = () => {
     setLoading(true);
-
-    setTimeout(() => {
-      onClose();
-      window.location.href = "/preview";
-    }, 1000);
+    navigate("/preview");
   };
 
   return (
