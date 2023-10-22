@@ -105,7 +105,7 @@ function Zoom(props: Props) {
         userName: value.userName,
       });
 
-      // setZoomClient(client);
+      setZoomClient(client);
       setLoading(false);
     } catch (error) {
       console.log("error", error);
