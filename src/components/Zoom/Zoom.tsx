@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
-import useOnlyShowGalleryView from "../../hooks/useOnlyShowGalleryView/index.ts";
-import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
 import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
 import "./index.scss";
@@ -10,8 +8,6 @@ import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
 import axios from "axios";
 import Modal from "../Modal.tsx";
 import { useDisclosure } from "@chakra-ui/react";
-import useAutoTurnAudioPermission from "../../hooks/useAutoTurnAudioPermission/index.ts";
-import useAutoTurnVideoOn from "../../hooks/useAutoTurnVideoOn.ts";
 
 interface Form {
   userName: string;
@@ -27,8 +23,6 @@ const meetingNumber = "8561292498";
 const password = "Hh9z3T";
 
 function Zoom(props: Props) {
-  const isTurnOnVideo = localStorage.getItem("video") === "false" ? false : true;
-  const isTurnOnAudio = localStorage.getItem("mute") === "false" ? false : true;
   const { onEnded } = props;
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<typeof EmbeddedClient>();
@@ -42,17 +36,10 @@ function Zoom(props: Props) {
   const [loading, setLoading] = useState(true);
   const { onClose } = useDisclosure();
 
-  useZoomDebug(zoomClient);
-  useOnlyShowGalleryView(zoomClient, {
-    enabled: !isMod,
-    container: document.getElementById("container") as HTMLElement,
-  });
   useResizeZoom(zoomClient, {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
-  const { handler: audioHandler, disconnect: disconnectAudio } = useAutoTurnAudioPermission();
-  const { handler: videoHandler, disconnect: disconnectVideo } = useAutoTurnVideoOn();
 
   const loadZoom = useCallback(async () => {
     try {
@@ -118,33 +105,15 @@ function Zoom(props: Props) {
         userName: value.userName,
       });
 
-      audioHandler(client, isTurnOnAudio);
-      if (isTurnOnVideo) videoHandler(meetingSDKElement.current!);
-
-      setZoomClient(client);
+      // setZoomClient(client);
       setLoading(false);
     } catch (error) {
       console.log("error", error);
     }
-  }, [
-    isMod,
-    value.meetingNumber,
-    value.password,
-    value.userName,
-    isTurnOnAudio,
-    isTurnOnVideo,
-    audioHandler,
-    videoHandler,
-    onEnded,
-  ]);
+  }, [isMod, value.meetingNumber, value.password, value.userName, onEnded]);
 
   useEffect(() => {
     loadZoom();
-
-    return () => {
-      disconnectAudio();
-      disconnectVideo();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
