@@ -183,7 +183,7 @@ const PreviewPage = () => {
             autoPlay
             style={{ transform: "rotateY(180deg)" }}
             muted={mute}
-            className="bg-[#242424] w-full h-[300px] lg:h-[600px]"
+            className="bg-[#242424] w-full h-[300px] lg:h-[600px] object-cover"
             playsInline
           ></video>
           <Box pos="absolute" bottom={1} left={0} zIndex={10000} w="full">
