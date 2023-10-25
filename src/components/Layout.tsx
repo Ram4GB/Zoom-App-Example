@@ -57,6 +57,7 @@ export default function Layout(props: Layout) {
                     icon={<SettingsIcon />}
                     aria-label="Settings icon"
                     onClick={() => setIsOpenSettingModal(true)}
+                    display="none"
                   />
                 </Tooltip>
               </Stack>
@@ -68,7 +69,7 @@ export default function Layout(props: Layout) {
                     variant="unstyled"
                     icon={<PiDotsNineBold />}
                     aria-label="More"
-                    display="flex"
+                    display="none"
                     alignItems="center"
                     justifyContent="center"
                   />
