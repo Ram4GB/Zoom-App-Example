@@ -1,6 +1,6 @@
 # Zoom app
 
-Zoom meeting is the place where you meet and join with your friends immediately without login on. There is the project that I am researching and working on Zoom SDK on my business. Happy to share/contribute. Check out [meet-zoom.vercel.app](meet-zoom.vercel.app)
+Zoom meeting is the place where you meet and join with your friends immediately without login on. There is the project that I am researching and working on Zoom SDK on my business. Happy to share or contribute. Check out [DEMO HERE](meet-zoom.vercel.app)
 
 ![Alt text](./images/1.png)
 
@@ -38,3 +38,17 @@ npm run dev:goat
 ## Generate token
 
 We can generate token from client side but it is not safe for us to disclose the app key, so we will create the Nodejs server that returns a token. Here is [the example](./API.md)
+
+## Browser support
+
+Some browsers actually do not work or show full features because of Zoom's limitation.
+
+| Chrome  | ✅︎ |
+| ------- | --- |
+| Firefox | ✅︎ |
+| Safari  | ✅︎ |
+| Edge    | ✅︎ |
+| IOS     | 🚫  |
+| Android | 🚫  |
+
+Otherwise you can check more by clicking on [this link here](https://developers.zoom.us/docs/meeting-sdk/web/browser-support/)
