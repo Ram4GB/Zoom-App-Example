@@ -112,6 +112,7 @@ export default function LandingPage() {
                   leftIcon={<MdOutlineEmergencyRecording />}
                   colorScheme="teal"
                   variant="solid"
+                  w={{ base: "full", sm: "auto" }}
                 >
                   New meeting
                 </MenuButton>
@@ -128,14 +129,14 @@ export default function LandingPage() {
                 </MenuList>
               </Menu>
 
-              <InputGroup flexGrow={1} maxW="231px">
+              <InputGroup flexGrow={1} maxW={{ base: "full", sm: "231px" }}>
                 <InputLeftElement h="full" pointerEvents="none">
                   <FaRegKeyboard />
                 </InputLeftElement>
-                <Input defaultValue="8561292498" size="lg" placeholder="Enter a code or link" />
+                <Input value="8561292498" onChange={() => {}} size="lg" placeholder="Enter a code or link" />
               </InputGroup>
 
-              <Button onClick={confirmJoinMeeting} size="lg">
+              <Button onClick={confirmJoinMeeting} size="lg" w={{ base: "full", sm: "auto" }}>
                 Join
               </Button>
             </Stack>
@@ -143,7 +144,7 @@ export default function LandingPage() {
             <Divider pt="24px" />
 
             <Box as="p" pt="24px">
-              <Link>Learn more</Link> <span color="zlight-grey">about Google Meet</span>
+              <Link href="/">Learn more</Link> <span color="zlight-grey">about Google Meet</span>
             </Box>
           </Box>
 
