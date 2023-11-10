@@ -7,44 +7,11 @@ import { SiGoogleclassroom } from "react-icons/si";
 
 // https://web.dev/articles/getusermedia-intro#round_3_webrtc
 
-interface Navigator {
-  getUserMedia(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    options: { video?: any; audio?: boolean },
-    success: (stream: MediaStream) => void,
-    error: (error: string) => void,
-  ): void;
-  webkitGetUserMedia: unknown;
-  mozGetUserMedia: unknown;
-  msGetUserMedia: unknown;
-}
-
 const PreviewPage = () => {
   const videoEl = useRef<HTMLVideoElement>();
-  // const audioSelectEl = useRef<HTMLSelectElement>();
-  // const videoSelectEl = useRef<HTMLSelectElement>();
   const [mute, setMute] = useState(true);
   const [video, setVideo] = useState(false);
   const navigate = useNavigate();
-
-  const hasGetUserMedia = () => {
-    const customNavigator = navigator as unknown as Navigator;
-
-    return !!(
-      customNavigator.getUserMedia ||
-      customNavigator.webkitGetUserMedia ||
-      customNavigator.mozGetUserMedia ||
-      customNavigator.msGetUserMedia
-    );
-  };
-
-  const handleCheckUserMedia = () => {
-    if (hasGetUserMedia()) {
-      console.log("supported");
-    } else {
-      console.log("getUserMedia() is not supported in your browser");
-    }
-  };
 
   const grantMediaPermission = async () => {
     const customNavigator = navigator;
@@ -85,68 +52,7 @@ const PreviewPage = () => {
     }
   };
 
-  // const requestMediaPermission = () => {
-  //   return navigator.mediaDevices.getUserMedia({
-  //     audio: { deviceId: undefined },
-  //     video: { deviceId: undefined },
-  //   });
-  // };
-
-  const getDevices = () => {
-    console.log("getDevices");
-    return navigator.mediaDevices
-      .enumerateDevices()
-      .then((deviceInfos) => {
-        console.log("deviceInfos", deviceInfos);
-      })
-      .catch(handleError);
-  };
-
-  useEffect(() => {
-    handleCheckUserMedia();
-
-    // requestMediaPermission().then(() => {
-    //   console.log("1. media permission works");
-    //   console.log("2. get list of devices");
-    //   return getDevices();
-    // });
-
-    // const changeMedia = () => {
-    //   if (!audioSelectEl.current || !videoSelectEl.current) return;
-
-    //   const audioId = audioSelectEl.current.value;
-    //   const videoId = videoSelectEl.current.value;
-
-    //   navigator.mediaDevices
-    //     .getUserMedia({
-    //       audio: {
-    //         deviceId: audioId ? { exact: audioId } : undefined,
-    //       },
-    //       video: {
-    //         deviceId: videoId ? { exact: videoId } : undefined,
-    //       },
-    //     })
-    //     .then((localMediaStream) => {
-    //       if (!videoEl.current) return;
-
-    //       videoEl.current.srcObject = localMediaStream;
-    //     })
-    //     .catch(handleError);
-    // };
-
-    // if (!audioSelectEl.current || !videoSelectEl.current) return;
-
-    // if (audioSelectEl.current) audioSelectEl.current.onchange = changeMedia;
-    // if (videoSelectEl.current) videoSelectEl.current.onchange = changeMedia;
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleError = (e: unknown) => {
-    if (e instanceof Error) {
-      return console.log(e.message);
-    }
-  };
+  useEffect(() => {}, []);
 
   const toggleVideo = () => {
     if (video) {
@@ -165,14 +71,6 @@ const PreviewPage = () => {
       setMute(true);
     }
   };
-
-  useEffect(() => {
-    localStorage.setItem("mute", String(mute));
-    localStorage.setItem("video", String(video));
-    getDevices();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mute, video]);
 
   return (
     <Flex className="h-screen" alignItems="center">
@@ -195,7 +93,7 @@ const PreviewPage = () => {
                 size="lg"
                 variant="solid"
                 // colorScheme="whatsapp"
-              ></IconButton>{" "}
+              ></IconButton>
               <IconButton
                 aria-label=""
                 icon={!video ? <FiVideoOff /> : <FiVideo />}
