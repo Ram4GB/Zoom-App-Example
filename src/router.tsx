@@ -3,7 +3,6 @@ import Layout from "./components/Layout";
 import LandingPage from "./pages/LandingPage";
 import MeetingPage from "./pages/MeetingPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import PreviewPage from "./pages/PreviewPage";
 
 const router = createBrowserRouter([
   {
@@ -17,10 +16,6 @@ const router = createBrowserRouter([
       {
         path: "/meeting",
         element: <MeetingPage />,
-      },
-      {
-        path: "/preview",
-        element: <PreviewPage />,
       },
     ],
     errorElement: <NotFoundPage />,

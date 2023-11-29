@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
 import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
@@ -41,7 +41,7 @@ function Zoom(props: Props) {
     container: document.getElementById("container") as HTMLElement,
   });
 
-  const loadZoom = useCallback(async () => {
+  const loadZoom = async () => {
     try {
       const client = ZoomMtgEmbedded.createClient();
 
@@ -110,11 +110,10 @@ function Zoom(props: Props) {
     } catch (error) {
       console.log("error", error);
     }
-  }, [isMod, value.meetingNumber, value.password, value.userName, onEnded]);
+  };
 
   useEffect(() => {
     loadZoom();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
