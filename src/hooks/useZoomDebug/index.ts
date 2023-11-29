@@ -16,11 +16,14 @@ export default function useZoomDebug(client: typeof EmbeddedClient | null) {
 
     client.on("user-added", userAddedHandler);
 
-    const userUpdatedHandler = (payload: unknown) => {
+    const userUpdatedHandler = (payload: [{ bInFailover?: boolean; userId: string }]) => {
       console.log("userUpdatedHandler", payload);
+      if (payload[0].bInFailover) {
+        console.log("userId fail over", payload[0].userId);
+      }
     };
 
-    client.on("user-updated", userUpdatedHandler);
+    client.on("user-updated", userUpdatedHandler as any);
 
     const userRemovedHandler = (payload: unknown) => {
       console.log("userRemovedHandler", payload);
