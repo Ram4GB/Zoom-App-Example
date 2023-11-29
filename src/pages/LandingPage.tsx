@@ -86,7 +86,7 @@ export default function LandingPage() {
 
     setTimeout(() => {
       onClose();
-      window.location.href = "/preview";
+      window.location.href = "/meeting";
     }, 1000);
   };
 
