@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from "react";
-import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
-import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
-import "./index.scss";
-import CustomToolbar from "./CustomToolbar.tsx";
-import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
-import axios from "axios";
-import Modal from "../Modal.tsx";
 import { useDisclosure } from "@chakra-ui/react";
+import { faker } from "@faker-js/faker";
+import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
+import Modal from "../Modal.tsx";
+import CustomToolbar from "./CustomToolbar.tsx";
+import "./index.scss";
 
 interface Form {
   userName: string;
@@ -15,15 +15,10 @@ interface Form {
   password: string;
 }
 
-interface Props {
-  onEnded?: () => void;
-}
-
 const meetingNumber = "8561292498";
 const password = "Hh9z3T";
 
-function Zoom(props: Props) {
-  const { onEnded } = props;
+function Zoom() {
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<typeof EmbeddedClient>();
   const [value] = useState<Form>({
@@ -31,7 +26,6 @@ function Zoom(props: Props) {
     meetingNumber,
     password,
   });
-  const [isMod] = useState(true);
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
   const [loading, setLoading] = useState(true);
   const { onClose } = useDisclosure();
@@ -83,15 +77,11 @@ function Zoom(props: Props) {
       });
 
       client.on("connection-change", (payload) => {
-        if (payload.state === "Connected") {
-          if (!isMod) document.body.classList.add("only-gallery-view");
-        } else {
-          document.body.classList.remove("only-gallery-view");
+        if (payload.state !== "Connected") {
           ZoomMtgEmbedded.destroyClient();
           clientRef.current = undefined;
           window.zoomClient = null;
           setZoomClient(null);
-          onEnded?.();
         }
       });
 
