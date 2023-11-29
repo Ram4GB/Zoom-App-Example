@@ -41,8 +41,6 @@ const useAutoTurnAudioPermission = () => {
           return;
         }
 
-        // mute = false -> unmute
-
         if (title === "Mute") {
           if (mutationObserver.current) {
             return mutationObserver.current.disconnect();
