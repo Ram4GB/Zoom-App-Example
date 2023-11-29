@@ -1,13 +1,12 @@
 import { Box, Flex } from "@chakra-ui/layout";
-import { useDisclosure } from "@chakra-ui/react";
 import { faker } from "@faker-js/faker";
 import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
-import Modal from "../Modal.tsx";
 import CustomToolbar from "./CustomToolbar.tsx";
 import "./index.scss";
+import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
 
 interface Form {
   userName: string;
@@ -27,13 +26,13 @@ function Zoom() {
     password,
   });
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { onClose } = useDisclosure();
 
   useResizeZoom(zoomClient, {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
+
+  useZoomDebug(zoomClient);
 
   const loadZoom = async () => {
     try {
@@ -96,7 +95,6 @@ function Zoom() {
       });
 
       setZoomClient(client);
-      setLoading(false);
     } catch (error) {
       console.log("error", error);
     }
@@ -118,15 +116,6 @@ function Zoom() {
         </Box>
         <CustomToolbar />
       </Flex>
-
-      <Modal
-        title="Notification"
-        description="Please wait! We are initializing your meeting. This will take a minute."
-        isOpen={loading}
-        onClose={onClose}
-        hideCancelBtn
-        hideCloseIcon
-      />
     </>
   );
 }
