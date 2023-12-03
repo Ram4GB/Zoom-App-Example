@@ -4,12 +4,7 @@ import { Portal } from "@chakra-ui/portal";
 const CustomToolbar = () => {
   return (
     <Portal>
-      <Box as="div" position="fixed" bgColor="red" right={4} bottom={4}>
-        {/* <Box as="div">hello world</Box>
-        <Box as="div">hello world</Box>
-        <Box as="div">hello world</Box>
-        <Box as="div">hello world</Box> */}
-      </Box>
+      <Box as="div" position="fixed" bgColor="red" right={4} bottom={4}></Box>
     </Portal>
   );
 };

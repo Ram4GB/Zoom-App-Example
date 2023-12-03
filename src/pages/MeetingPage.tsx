@@ -5,7 +5,7 @@ import Confirmation from "../components/Confirmation";
 import { useState } from "react";
 
 export default function Meeting() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
 
   const onOk = () => {
@@ -25,7 +25,7 @@ export default function Meeting() {
         pb={0}
         px={0}
       >
-        <Zoom onEnded={onOpen} />
+        <Zoom />
 
         <Confirmation
           loading={loading}

@@ -1,15 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
-import useOnlyShowGalleryView from "../../hooks/useOnlyShowGalleryView/index.ts";
-import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
-import { faker } from "@faker-js/faker";
 import { Box, Flex } from "@chakra-ui/layout";
-import "./index.scss";
-import CustomToolbar from "./CustomToolbar.tsx";
-import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
+import { faker } from "@faker-js/faker";
+import ZoomMtgEmbedded, { EmbeddedClient, SuspensionViewType } from "@zoomus/websdk/embedded";
 import axios from "axios";
-import Modal from "../Modal.tsx";
-import { useDisclosure } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
+import useResizeZoom from "../../hooks/useResizeZoom.ts/index.ts";
+import CustomToolbar from "./CustomToolbar.tsx";
+import "./index.scss";
+import useZoomDebug from "../../hooks/useZoomDebug/index.ts";
 
 interface Form {
   userName: string;
@@ -17,15 +14,10 @@ interface Form {
   password: string;
 }
 
-interface Props {
-  onEnded?: () => void;
-}
-
 const meetingNumber = "8561292498";
 const password = "Hh9z3T";
 
-function Zoom(props: Props) {
-  const { onEnded } = props;
+function Zoom() {
   const meetingSDKElement = useRef<HTMLDivElement | null>(null);
   const clientRef = useRef<typeof EmbeddedClient>();
   const [value] = useState<Form>({
@@ -33,22 +25,14 @@ function Zoom(props: Props) {
     meetingNumber,
     password,
   });
-  const [isMod] = useState(true);
   const [zoomClient, setZoomClient] = useState<typeof EmbeddedClient | null>(null);
-  const [loading, setLoading] = useState(true);
-  const { onClose } = useDisclosure();
-
-  useZoomDebug(zoomClient);
-
-  useOnlyShowGalleryView(zoomClient, {
-    enabled: !isMod,
-    container: document.getElementById("container") as HTMLElement,
-  });
 
   useResizeZoom(zoomClient, {
     zoomAppId: "zoom-app",
     container: document.getElementById("container") as HTMLElement,
   });
+
+  useZoomDebug(zoomClient);
 
   const loadZoom = async () => {
     try {
@@ -92,15 +76,11 @@ function Zoom(props: Props) {
       });
 
       client.on("connection-change", (payload) => {
-        if (payload.state === "Connected") {
-          if (!isMod) document.body.classList.add("only-gallery-view");
-        } else {
-          document.body.classList.remove("only-gallery-view");
+        if (payload.state !== "Connected") {
           ZoomMtgEmbedded.destroyClient();
           clientRef.current = undefined;
           window.zoomClient = null;
           setZoomClient(null);
-          onEnded?.();
         }
       });
 
@@ -115,7 +95,6 @@ function Zoom(props: Props) {
       });
 
       setZoomClient(client);
-      setLoading(false);
     } catch (error) {
       console.log("error", error);
     }
@@ -137,15 +116,6 @@ function Zoom(props: Props) {
         </Box>
         <CustomToolbar />
       </Flex>
-
-      <Modal
-        title="Notification"
-        description="Please wait! We are initializing your meeting. This will take a minute."
-        isOpen={loading}
-        onClose={onClose}
-        hideCancelBtn
-        hideCloseIcon
-      />
     </>
   );
 }
