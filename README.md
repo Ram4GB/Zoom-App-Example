@@ -1,4 +1,4 @@
-# Zoom app
+# Zoom app (deprecated SKD now)
 
 Zoom meeting is the place where you meet and join with your friends immediately without login on. There is the project that I am researching and working on Zoom SDK on my business. Happy to share or contribute. Check out [DEMO HERE](meet-zoom.vercel.app)
 
